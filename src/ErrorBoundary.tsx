@@ -1,4 +1,6 @@
 import { Component, ReactNode } from 'react';
+import Home from './pages/Home';
+import Errors from './pages/Error';
 
 interface Props {
   children?: ReactNode;
@@ -14,17 +16,22 @@ class ErrorBoundary extends Component<Props, State> {
     this.state = { hasError: false };
   }
 
-  public static getDerivedStateFromError(): State {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public static getDerivedStateFromError(_: Error): State {
+    // Update state so the next render will show the fallback UI.
     return { hasError: true };
   }
 
-  public render() {
+  public componentDidCatch() {
+    this.setState({ hasError: true });
+  }
+
+  render() {
     const { hasError } = this.state;
-    const { children } = this.props;
     return (
       <>
-        {hasError && <h1>Oops, an error occured</h1>}
-        {!hasError && children}
+        {hasError === true && <Errors />}
+        {hasError === false && <Home />}
       </>
     );
   }

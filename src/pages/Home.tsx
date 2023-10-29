@@ -34,7 +34,6 @@ class Home extends Component<object, { loading: boolean; data: IStarship[] }> {
         this.setState({ data, loading: false });
       }, 700);
     }
-    throw new Error('CRASHED');
   }
 
   render() {
@@ -58,6 +57,15 @@ class Home extends Component<object, { loading: boolean; data: IStarship[] }> {
             }}
           >
             Search
+          </button>
+          <button
+            type="button"
+            className="button-error"
+            onClick={() => {
+              throw new Error('CRASHED');
+            }}
+          >
+            Make Error
           </button>
         </div>
         <div className="data-container">
