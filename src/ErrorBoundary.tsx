@@ -16,9 +16,7 @@ class ErrorBoundary extends Component<Props, State> {
     this.state = { hasError: false };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public static getDerivedStateFromError(_: Error): State {
-    // Update state so the next render will show the fallback UI.
+  public static getDerivedStateFromError(): State {
     return { hasError: true };
   }
 
@@ -26,12 +24,19 @@ class ErrorBoundary extends Component<Props, State> {
     this.setState({ hasError: true });
   }
 
+  handleErrorState(newValue: boolean) {
+    // eslint-disable-next-line no-console
+    if (newValue) console.error('Error caught by Error Boundary');
+    this.setState({ hasError: newValue });
+  }
+
   render() {
     const { hasError } = this.state;
+    this.handleErrorState = this.handleErrorState.bind(this);
     return (
       <>
-        {hasError === true && <Errors />}
-        {hasError === false && <Home />}
+        {hasError === true && <Errors onErrorChange={this.handleErrorState} />}
+        {hasError === false && <Home onErrorChange={this.handleErrorState} />}
       </>
     );
   }

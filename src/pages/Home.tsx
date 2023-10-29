@@ -2,13 +2,17 @@ import { Component, createRef } from 'react';
 import { IStarship } from '../types/starship';
 import getStarships from '../utils/api';
 import Ship from '../components/Ship';
+import { ErrorProps } from './interfaces';
 
-class Home extends Component<object, { loading: boolean; data: IStarship[] }> {
+class Home extends Component<
+  ErrorProps,
+  { loading: boolean; data: IStarship[] }
+> {
   inputRef = createRef<HTMLInputElement>();
 
   timeoutId: number = 0;
 
-  constructor(props: object) {
+  constructor(props: ErrorProps) {
     super(props);
 
     this.state = {
@@ -36,8 +40,18 @@ class Home extends Component<object, { loading: boolean; data: IStarship[] }> {
     }
   }
 
+  makeError = () => {
+    const { onErrorChange } = this.props;
+    try {
+      throw new Error('My custom Error');
+    } catch {
+      onErrorChange(true);
+    }
+  };
+
   render() {
     const { loading, data } = this.state;
+    // const { onErrorChange } = this.props;
     return (
       <>
         <div className="search">
@@ -61,9 +75,7 @@ class Home extends Component<object, { loading: boolean; data: IStarship[] }> {
           <button
             type="button"
             className="button-error"
-            onClick={() => {
-              throw new Error('CRASHED');
-            }}
+            onClick={this.makeError}
           >
             Make Error
           </button>
