@@ -22,13 +22,6 @@ class Home extends Component<object, { loading: boolean; data: IStarship[] }> {
     this.setState({ data });
   }
 
-  async componentDidUpdate() {
-    // console.log('State:\n', this.state)
-    // this.setState({ loading: true })
-    // const data = await getStarships(this.state.search)
-    // this.setState({ data, loading: false })
-  }
-
   handleInputChange() {
     if (this.inputRef.current) {
       const { value } = this.inputRef.current;
@@ -41,6 +34,7 @@ class Home extends Component<object, { loading: boolean; data: IStarship[] }> {
         this.setState({ data, loading: false });
       }, 700);
     }
+    throw new Error('CRASHED');
   }
 
   render() {
