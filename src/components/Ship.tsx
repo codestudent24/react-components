@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { IStarship } from '../types/starship';
+import './Ship.css';
 
 type ShipProps = {
   item: IStarship;

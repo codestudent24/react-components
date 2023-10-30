@@ -3,6 +3,7 @@ import { IStarship } from '../types/starship';
 import getStarships from '../utils/api';
 import Ship from '../components/Ship';
 import { ErrorProps } from './interfaces';
+import './Home.css';
 
 class Home extends Component<
   ErrorProps,
@@ -16,19 +17,23 @@ class Home extends Component<
     super(props);
 
     this.state = {
-      loading: false,
+      loading: true,
       data: [],
     };
   }
 
   async componentDidMount() {
-    const data = await getStarships();
-    this.setState({ data });
+    const lastSearch = localStorage.getItem('searchKey') || '';
+    if (this.inputRef.current) this.inputRef.current.value = lastSearch;
+    const data = await getStarships(lastSearch);
+    this.setState({ data, loading: false });
   }
 
   handleInputChange() {
     if (this.inputRef.current) {
       const { value } = this.inputRef.current;
+
+      localStorage.setItem('searchKey', value);
 
       clearTimeout(this.timeoutId);
 
@@ -51,7 +56,6 @@ class Home extends Component<
 
   render() {
     const { loading, data } = this.state;
-    // const { onErrorChange } = this.props;
     return (
       <>
         <div className="search">
@@ -81,8 +85,7 @@ class Home extends Component<
           </button>
         </div>
         <div className="data-container">
-          <span>fetched data:</span>
-          {loading && <span>loading...</span>}
+          {loading && <span className="loading">loading...</span>}
           {loading === false && (
             <ul>
               {data.map((elem) => {

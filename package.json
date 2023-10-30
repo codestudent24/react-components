@@ -44,7 +44,7 @@
     "vitest": "^0.34.6"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
+    "**/*.{ts,tsx}": [
       "eslint . --fix",
       "prettier . --write"
     ]
