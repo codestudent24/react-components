@@ -2,36 +2,38 @@ import { Component, createRef } from 'react';
 import { IStarship } from '../types/starship';
 import getStarships from '../utils/api';
 import Ship from '../components/Ship';
+import { ErrorProps } from './interfaces';
+import './Home.css';
 
-class Home extends Component<object, { loading: boolean; data: IStarship[] }> {
+class Home extends Component<
+  ErrorProps,
+  { loading: boolean; data: IStarship[] }
+> {
   inputRef = createRef<HTMLInputElement>();
 
   timeoutId: number = 0;
 
-  constructor(props: object) {
+  constructor(props: ErrorProps) {
     super(props);
 
     this.state = {
-      loading: false,
+      loading: true,
       data: [],
     };
   }
 
   async componentDidMount() {
-    const data = await getStarships();
-    this.setState({ data });
-  }
-
-  async componentDidUpdate() {
-    // console.log('State:\n', this.state)
-    // this.setState({ loading: true })
-    // const data = await getStarships(this.state.search)
-    // this.setState({ data, loading: false })
+    const lastSearch = localStorage.getItem('searchKey') || '';
+    if (this.inputRef.current) this.inputRef.current.value = lastSearch;
+    const data = await getStarships(lastSearch);
+    this.setState({ data, loading: false });
   }
 
   handleInputChange() {
     if (this.inputRef.current) {
       const { value } = this.inputRef.current;
+
+      localStorage.setItem('searchKey', value);
 
       clearTimeout(this.timeoutId);
 
@@ -42,6 +44,15 @@ class Home extends Component<object, { loading: boolean; data: IStarship[] }> {
       }, 700);
     }
   }
+
+  makeError = () => {
+    const { onErrorChange } = this.props;
+    try {
+      throw new Error('My custom Error');
+    } catch {
+      onErrorChange(true);
+    }
+  };
 
   render() {
     const { loading, data } = this.state;
@@ -65,10 +76,16 @@ class Home extends Component<object, { loading: boolean; data: IStarship[] }> {
           >
             Search
           </button>
+          <button
+            type="button"
+            className="button-error"
+            onClick={this.makeError}
+          >
+            Make Error
+          </button>
         </div>
         <div className="data-container">
-          <span>fetched data:</span>
-          {loading && <span>loading...</span>}
+          {loading && <span className="loading">loading...</span>}
           {loading === false && (
             <ul>
               {data.map((elem) => {
