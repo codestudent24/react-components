@@ -1,6 +1,6 @@
-import { Component, ReactNode } from 'react';
-import Home from './pages/Home';
+import { Component, ReactNode, ErrorInfo } from 'react';
 import Errors from './pages/Error';
+import Home from './pages/Home';
 
 interface Props {
   children?: ReactNode;
@@ -20,23 +20,23 @@ class ErrorBoundary extends Component<Props, State> {
     return { hasError: true };
   }
 
-  public componentDidCatch() {
-    this.setState({ hasError: true });
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    // eslint-disable-next-line no-console
+    console.warn('Caught Error', error, errorInfo);
   }
 
   handleErrorState(newValue: boolean) {
-    // eslint-disable-next-line no-console
-    if (newValue) console.error('Error caught by Error Boundary');
     this.setState({ hasError: newValue });
   }
 
   render() {
     const { hasError } = this.state;
+
     this.handleErrorState = this.handleErrorState.bind(this);
     return (
       <>
         {hasError === true && <Errors onErrorChange={this.handleErrorState} />}
-        {hasError === false && <Home onErrorChange={this.handleErrorState} />}
+        {hasError === false && <Home setHasError={this.handleErrorState} />}
       </>
     );
   }

@@ -1,22 +1,19 @@
-import { PureComponent } from 'react';
 import { ErrorProps } from './interfaces';
 
-class Error extends PureComponent<ErrorProps> {
-  undoError = () => {
-    const { onErrorChange } = this.props;
+function Error(props: ErrorProps) {
+  function undoError() {
+    const { onErrorChange } = props;
     onErrorChange(false);
-  };
-
-  render() {
-    return (
-      <>
-        <h1>Oops... we have an error!</h1>
-        <button type="button" onClick={this.undoError}>
-          undo error
-        </button>
-      </>
-    );
   }
+
+  return (
+    <>
+      <h1>Oops... we have an error!</h1>
+      <button type="button" onClick={undoError}>
+        undo error
+      </button>
+    </>
+  );
 }
 
 export default Error;
