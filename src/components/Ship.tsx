@@ -1,12 +1,15 @@
+import { useSearchParams } from 'react-router-dom';
 import { IStarship } from '../types/starship';
 import './Ship.css';
 
 type ShipProps = {
   item: IStarship;
+  index: number;
 };
 
 function Ship(props: ShipProps) {
-  const { item } = props;
+  const [, setSearch] = useSearchParams();
+  const { item, index } = props;
 
   return (
     <li>
@@ -17,6 +20,15 @@ function Ship(props: ShipProps) {
       <p>Length: {item.length}</p>
       <p>Passangers number: {item.passengers}</p>
       <p>Cargo capacity: {item.cargo_capacity}</p>
+      <button
+        type="button"
+        className="button-detailed"
+        onClick={() => {
+          setSearch({ detailed: `${index}` });
+        }}
+      >
+        Show detailes
+      </button>
     </li>
   );
 }

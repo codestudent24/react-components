@@ -1,15 +1,18 @@
-import { ErrorProps } from './interfaces';
+import { useContext } from 'react';
+import ErrorContext from '../context';
 
-function Error(props: ErrorProps) {
-  function undoError() {
-    const { onErrorChange } = props;
-    onErrorChange(false);
-  }
+function Error() {
+  const { setIsError } = useContext(ErrorContext);
 
   return (
     <>
       <h1>Oops... we have an error!</h1>
-      <button type="button" onClick={undoError}>
+      <button
+        type="button"
+        onClick={() => {
+          setIsError(false);
+        }}
+      >
         undo error
       </button>
     </>

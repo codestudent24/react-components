@@ -1,6 +1,7 @@
 import { Component, ReactNode, ErrorInfo } from 'react';
 import Errors from './pages/Error';
 import Home from './pages/Home';
+import ErrorContext, { ContextType } from './context';
 
 interface Props {
   children?: ReactNode;
@@ -11,35 +12,29 @@ interface State {
 }
 
 class ErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  public static getDerivedStateFromError(): State {
-    return { hasError: true };
-  }
-
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // eslint-disable-next-line no-console
     console.warn('Caught Error', error, errorInfo);
+    const { setIsError } = this.context as ContextType;
+    setIsError(true);
   }
 
   handleErrorState(newValue: boolean) {
-    this.setState({ hasError: newValue });
+    this.context = newValue;
   }
 
   render() {
-    const { hasError } = this.state;
-
     this.handleErrorState = this.handleErrorState.bind(this);
+    const { isError } = this.context as ContextType;
     return (
       <>
-        {hasError === true && <Errors onErrorChange={this.handleErrorState} />}
-        {hasError === false && <Home setHasError={this.handleErrorState} />}
+        {isError && <Errors />}
+        {!isError && <Home />}
       </>
     );
   }
 }
+
+ErrorBoundary.contextType = ErrorContext;
 
 export default ErrorBoundary;

@@ -1,25 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { IStarship } from '../types/starship';
 import loadDataFromApi from '../utils/functions';
+import ErrorContext from '../context';
 
 type Props = {
   setData: (data: IStarship[]) => void;
   setLoading: (loading: boolean) => void;
-  setHasError: (isError: boolean) => void;
+  currentPage: number;
 };
 
 function Search(props: Props) {
+  const [, setSearchParams] = useSearchParams();
   const [input, setInput] = useState(localStorage.getItem('searchKey') || '');
-  const { setData, setLoading } = props;
+  const { setData, setLoading, currentPage } = props;
+  const { setIsError } = useContext(ErrorContext);
 
   useEffect(() => {
     localStorage.setItem('searchKey', input);
-    loadDataFromApi(setLoading, setData, input);
-  }, [input, setData, setLoading]);
+    loadDataFromApi(setLoading, setData, input, currentPage);
+    setSearchParams({ page: currentPage.toString() });
+  }, [input, setData, setLoading, setSearchParams, currentPage]);
 
   function makeError() {
-    const { setHasError } = props;
-    setHasError(true);
+    setIsError(true);
     throw new Error('My custom Error');
   }
 
@@ -36,7 +40,7 @@ function Search(props: Props) {
         type="button"
         className="button-search"
         onClick={() => {
-          loadDataFromApi(setLoading, setData, input);
+          loadDataFromApi(setLoading, setData, input, currentPage);
         }}
       >
         Search

@@ -14,8 +14,8 @@ function SearchResults(props: Props) {
       {loading && <span className="loading">loading...</span>}
       {!loading && (
         <ul>
-          {data.map((elem) => {
-            return <Ship item={elem} key={elem.name} />;
+          {data.map((elem, index) => {
+            return <Ship item={elem} key={elem.name} index={index} />;
           })}
         </ul>
       )}
