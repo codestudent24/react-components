@@ -1,6 +1,5 @@
 import { Component, ReactNode, ErrorInfo } from 'react';
 import Errors from './pages/Error';
-import Home from './pages/Home';
 import ErrorContext, { ContextType } from './context';
 
 interface Props {
@@ -26,10 +25,12 @@ class ErrorBoundary extends Component<Props, State> {
   render() {
     this.handleErrorState = this.handleErrorState.bind(this);
     const { isError } = this.context as ContextType;
+    const { children } = this.props;
+
     return (
       <>
         {isError && <Errors />}
-        {!isError && <Home />}
+        {!isError && children}
       </>
     );
   }

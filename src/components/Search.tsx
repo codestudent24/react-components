@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { IStarship } from '../types/starship';
 import loadDataFromApi from '../utils/functions';
@@ -7,20 +7,45 @@ import ErrorContext from '../context';
 type Props = {
   setData: (data: IStarship[]) => void;
   setLoading: (loading: boolean) => void;
-  currentPage: number;
+  setHasNextPage: (value: boolean) => void;
+  setHasPreviousPage: (value: boolean) => void;
 };
 
+function defaultInput() {
+  return localStorage.getItem('searchKey') || '';
+}
+
 function Search(props: Props) {
-  const [, setSearchParams] = useSearchParams();
-  const [input, setInput] = useState(localStorage.getItem('searchKey') || '');
-  const { setData, setLoading, currentPage } = props;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(1);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { setData, setLoading, setHasNextPage, setHasPreviousPage } = props;
   const { setIsError } = useContext(ErrorContext);
 
   useEffect(() => {
-    localStorage.setItem('searchKey', input);
-    loadDataFromApi(setLoading, setData, input, currentPage);
-    setSearchParams({ page: currentPage.toString() });
-  }, [input, setData, setLoading, setSearchParams, currentPage]);
+    let pageParam = searchParams.get('page');
+    if (pageParam === null) {
+      pageParam = '1';
+      setSearchParams({ page: pageParam });
+    }
+    const page = Number(pageParam);
+    setCurrentPage(page);
+  }, [setData, setLoading, setSearchParams, searchParams]);
+
+  useEffect(() => {
+    const inputElement = inputRef.current;
+    if (inputElement) {
+      const input = inputElement.value;
+      loadDataFromApi(
+        setLoading,
+        setData,
+        setHasNextPage,
+        setHasPreviousPage,
+        input,
+        currentPage
+      );
+    }
+  }, [currentPage, setData, setLoading, setHasNextPage, setHasPreviousPage]);
 
   function makeError() {
     setIsError(true);
@@ -31,16 +56,30 @@ function Search(props: Props) {
     <div className="search">
       <input
         type="text"
-        defaultValue={input}
-        onChange={(e) => {
-          setInput(e.target.value);
+        defaultValue={defaultInput()}
+        ref={inputRef}
+        onChange={(event) => {
+          localStorage.setItem('searchKey', event.target.value);
         }}
       />
       <button
         type="button"
         className="button-search"
         onClick={() => {
-          loadDataFromApi(setLoading, setData, input, currentPage);
+          setSearchParams({ page: '1' });
+          const inputElement = inputRef.current;
+          if (inputElement) {
+            const input = inputElement.value;
+            loadDataFromApi(
+              setLoading,
+              setData,
+              setHasNextPage,
+              setHasPreviousPage,
+              input,
+              1
+            );
+            setCurrentPage(1);
+          }
         }}
       >
         Search

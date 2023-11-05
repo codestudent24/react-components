@@ -11,7 +11,7 @@ const getStarships = async (search: string = '', page: number = 1) => {
 
   const data = (await response.json()) as IStarshipResponse;
 
-  return data.results;
+  return data;
 };
 
 export default getStarships;

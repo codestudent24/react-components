@@ -1,7 +1,9 @@
 import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ErrorContext from '../context';
 
 function Error() {
+  const navigate = useNavigate();
   const { setIsError } = useContext(ErrorContext);
 
   return (
@@ -11,6 +13,7 @@ function Error() {
         type="button"
         onClick={() => {
           setIsError(false);
+          navigate('/?page=1');
         }}
       >
         undo error

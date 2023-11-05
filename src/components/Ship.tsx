@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { IStarship } from '../types/starship';
 import './Ship.css';
 
@@ -8,26 +8,25 @@ type ShipProps = {
 };
 
 function Ship(props: ShipProps) {
-  const [, setSearch] = useSearchParams();
+  const [search] = useSearchParams();
+  const navigate = useNavigate();
   const { item, index } = props;
+
+  function showDetails(details: number) {
+    const page = search.get('page');
+    navigate(`detailed/?page=${page}&details=${details}`);
+  }
 
   return (
     <li>
-      <h2>Starship {item.name}</h2>
-      <p>Model: {item.model}</p>
-      <p>Class: {item.starship_class}</p>
-      <p>Cost in galactic credits: {item.cost_in_credits}</p>
-      <p>Length: {item.length}</p>
-      <p>Passangers number: {item.passengers}</p>
-      <p>Cargo capacity: {item.cargo_capacity}</p>
       <button
         type="button"
-        className="button-detailed"
         onClick={() => {
-          setSearch({ detailed: `${index}` });
+          showDetails(index);
         }}
       >
-        Show detailes
+        <h2>Starship {item.name}</h2>
+        <p>Model: {item.model}</p>
       </button>
     </li>
   );

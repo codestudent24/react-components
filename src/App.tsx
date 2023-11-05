@@ -5,18 +5,18 @@ import {
   RouterProvider,
   createRoutesFromElements,
 } from 'react-router-dom';
-import ErrorBoundary from './ErrorBoundary';
-// import Errors from './pages/Error';
 import RootLayout from './Layouts/RootLayout';
-import DetailsLayout from './Layouts/DetailsLayout';
 import NotFound from './pages/NotFound';
+import Home from './pages/Home';
 import ErrorContext from './context';
+import DetailedItem from './components/DetailedItem';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
-      <Route index element={<ErrorBoundary />} />
-      <Route path="detailed" element={<DetailsLayout />} />
+      <Route path="/" element={<Home />}>
+        <Route path="detailed" element={<DetailedItem />} />
+      </Route>
       <Route path="*" element={<NotFound />} />
     </Route>
   )
