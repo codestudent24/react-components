@@ -20,7 +20,6 @@ function DetailedItem() {
       const index = Number(detailsParam);
       setItem(data[index]);
     }
-    if (item) console.log('from Deatails item', item);
   }, [data, search, item]);
 
   return (

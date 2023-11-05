@@ -13,7 +13,6 @@ function SearchResults(props: Props) {
   const { data, loading } = props;
 
   return (
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events
     <button
       type="button"
       className="data-container"
