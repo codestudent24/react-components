@@ -9,7 +9,7 @@ type ItemContextType = {
 
 function DetailedItem() {
   const [item, setItem] = useState<IStarship | null>(null);
-  const [search] = useSearchParams();
+  const [search, setSearch] = useSearchParams();
   const { data } = useOutletContext<ItemContextType>();
 
   useEffect(() => {
@@ -33,6 +33,16 @@ function DetailedItem() {
           <p>Length: {item.length}</p>
           <p>Passangers number: {item.passengers}</p>
           <p>Cargo capacity: {item.cargo_capacity}</p>
+          <button
+            type="button"
+            className="button-close"
+            onClick={() => {
+              const pageParam = search.get('page');
+              if (pageParam !== null) setSearch({ page: pageParam });
+            }}
+          >
+            X
+          </button>
         </div>
       )}
       {item === null && null}
