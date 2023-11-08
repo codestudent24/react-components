@@ -1,19 +1,40 @@
-import { PureComponent } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import {
+  createBrowserRouter,
+  Route,
+  RouterProvider,
+  createRoutesFromElements,
+} from 'react-router-dom';
+import RootLayout from './Layouts/RootLayout';
+import NotFound from './pages/NotFound';
 import Home from './pages/Home';
-import NotFound from './pages/notFound';
+import ErrorContext from './context';
+import DetailedItem from './components/DetailedItem';
 
-class App extends PureComponent {
-  render() {
-    return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    );
-  }
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<RootLayout />}>
+      <Route path="/" element={<Home />}>
+        <Route path="detailed" element={<DetailedItem />} />
+      </Route>
+      <Route path="*" element={<NotFound />} />
+    </Route>
+  )
+);
+
+export default function App() {
+  const [isError, setIsError] = useState<boolean>(false);
+  return (
+    <ErrorContext.Provider
+      value={useMemo(
+        () => ({
+          isError,
+          setIsError,
+        }),
+        [isError, setIsError]
+      )}
+    >
+      <RouterProvider router={router} />
+    </ErrorContext.Provider>
+  );
 }
-
-export default App;

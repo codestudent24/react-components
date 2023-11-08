@@ -1,26 +1,35 @@
-import { Component } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { IStarship } from '../types/starship';
+import './Ship.css';
 
 type ShipProps = {
   item: IStarship;
+  index: number;
 };
 
-class Ship extends Component<ShipProps> {
-  render() {
-    const { item } = this.props;
+function Ship(props: ShipProps) {
+  const [search] = useSearchParams();
+  const navigate = useNavigate();
+  const { item, index } = props;
 
-    return (
-      <li>
+  function showDetails(details: number) {
+    const page = search.get('page');
+    navigate(`detailed/?page=${page}&details=${details}`);
+  }
+
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={() => {
+          showDetails(index);
+        }}
+      >
         <h2>Starship {item.name}</h2>
         <p>Model: {item.model}</p>
-        <p>Class: {item.starship_class}</p>
-        <p>Cost in galactic credits: {item.cost_in_credits}</p>
-        <p>Length: {item.length}</p>
-        <p>Passangers number: {item.passengers}</p>
-        <p>Cargo capacity: {item.cargo_capacity}</p>
-      </li>
-    );
-  }
+      </button>
+    </li>
+  );
 }
 
 export default Ship;

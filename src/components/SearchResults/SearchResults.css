@@ -1,0 +1,6 @@
+.data-container {
+  border: none;
+  background-color: transparent;
+  margin: 0 20px;
+  flex-grow: 2;
+}

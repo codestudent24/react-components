@@ -1,0 +1,25 @@
+.details {
+  position: relative;
+  width: 30%;
+  height: 100%;
+  background-color: #444444;
+  color: #ffbb00;
+  padding: 20px;
+}
+
+.button-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 5px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 100%;
+  background-color: #FFFFFF;
+  color: #444444;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 900;
+  text-align: center;
+  cursor: pointer;
+}

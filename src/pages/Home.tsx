@@ -1,85 +1,62 @@
-import { Component, createRef } from 'react';
+import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import { IStarship } from '../types/starship';
-import getStarships from '../utils/api';
-import Ship from '../components/Ship';
+import Search from '../components/Search';
+import SearchResults from '../components/SearchResults';
+import PageHandler from '../components/PageHandler';
+import ErrorBoundary from '../ErrorBoundary';
+import './Home.css';
+import CardNumber from '../components/CardNumber';
 
-class Home extends Component<object, { loading: boolean; data: IStarship[] }> {
-  inputRef = createRef<HTMLInputElement>();
+type CurrentItemContext = {
+  data: IStarship[];
+};
 
-  timeoutId: number = 0;
+function Home() {
+  const [input, setInput] = useState('');
+  const [data, setData] = useState([] as IStarship[]);
+  const [loading, setLoading] = useState(true);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [hasPreviousPage, setHasPreviousPage] = useState(false);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [offset, setOffset] = useState(0);
 
-  constructor(props: object) {
-    super(props);
-
-    this.state = {
-      loading: false,
-      data: [],
-    };
-  }
-
-  async componentDidMount() {
-    const data = await getStarships();
-    this.setState({ data });
-  }
-
-  async componentDidUpdate() {
-    // console.log('State:\n', this.state)
-    // this.setState({ loading: true })
-    // const data = await getStarships(this.state.search)
-    // this.setState({ data, loading: false })
-  }
-
-  handleInputChange() {
-    if (this.inputRef.current) {
-      const { value } = this.inputRef.current;
-
-      clearTimeout(this.timeoutId);
-
-      this.timeoutId = window.setTimeout(async () => {
-        this.setState({ loading: true });
-        const data = await getStarships(value);
-        this.setState({ data, loading: false });
-      }, 700);
-    }
-  }
-
-  render() {
-    const { loading, data } = this.state;
-    return (
-      <>
-        <div className="search">
-          <input
-            type="text"
-            defaultValue=""
-            ref={this.inputRef}
-            onChange={() => {
-              this.handleInputChange();
-            }}
-          />
-          <button
-            type="button"
-            className="button-search"
-            onClick={() => {
-              this.handleInputChange();
-            }}
-          >
-            Search
-          </button>
-        </div>
-        <div className="data-container">
-          <span>fetched data:</span>
-          {loading && <span>loading...</span>}
-          {loading === false && (
-            <ul>
-              {data.map((elem) => {
-                return <Ship item={elem} key={elem.name} />;
-              })}
-            </ul>
-          )}
-        </div>
-      </>
-    );
-  }
+  return (
+    <ErrorBoundary>
+      <Search
+        setData={setData}
+        setLoading={setLoading}
+        setHasNextPage={setHasNextPage}
+        setHasPreviousPage={setHasPreviousPage}
+        setInput={setInput}
+      />
+      <CardNumber
+        itemsPerPage={itemsPerPage}
+        setItemsPerPage={setItemsPerPage}
+        offset={offset}
+        setOffset={setOffset}
+        setData={setData}
+        setLoading={setLoading}
+        setHasNextPage={setHasNextPage}
+        setHasPreviousPage={setHasPreviousPage}
+        input={input}
+      />
+      <div className="results-container">
+        <SearchResults
+          data={data}
+          loading={loading}
+          itemsPerPage={itemsPerPage}
+          offset={offset}
+        />
+        <Outlet context={{ data } satisfies CurrentItemContext} />
+      </div>
+      <PageHandler
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        loading={loading}
+      />
+    </ErrorBoundary>
+  );
 }
 
 export default Home;
