@@ -1,19 +1,13 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { IStarship } from '../types/starship';
-import Search from '../components/Search';
+import Search from '../components/Search/Search';
 import SearchResults from '../components/SearchResults';
 import PageHandler from '../components/PageHandler';
 import ErrorBoundary from '../ErrorBoundary';
-import './Home.css';
 import CardNumber from '../components/CardNumber';
-
-type CurrentItemContext = {
-  data: IStarship[];
-};
+import './Home.css';
 
 function Home() {
-  const [data, setData] = useState([] as IStarship[]);
   const [loading, setLoading] = useState(true);
   const [hasNextPage, setHasNextPage] = useState(false);
   const [hasPreviousPage, setHasPreviousPage] = useState(false);
@@ -23,7 +17,6 @@ function Home() {
   return (
     <ErrorBoundary>
       <Search
-        setData={setData}
         setLoading={setLoading}
         setHasNextPage={setHasNextPage}
         setHasPreviousPage={setHasPreviousPage}
@@ -36,12 +29,11 @@ function Home() {
       />
       <div className="results-container">
         <SearchResults
-          data={data}
           loading={loading}
           itemsPerPage={itemsPerPage}
           offset={offset}
         />
-        <Outlet context={{ data } satisfies CurrentItemContext} />
+        <Outlet />
       </div>
       <PageHandler
         hasNextPage={hasNextPage}

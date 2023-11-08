@@ -1,16 +1,13 @@
-import { useState, useEffect } from 'react';
-import { useSearchParams, useOutletContext } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { IStarship } from '../../types/starship';
 import './DetailedItem.css';
-
-type ItemContextType = {
-  data: IStarship[];
-};
+import { AppContext } from '../../context';
 
 function DetailedItem() {
   const [item, setItem] = useState<IStarship | null>(null);
   const [search, setSearch] = useSearchParams();
-  const { data } = useOutletContext<ItemContextType>();
+  const { data } = useContext(AppContext);
 
   useEffect(() => {
     const detailsParam = search.get('details');

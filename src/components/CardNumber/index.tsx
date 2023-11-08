@@ -23,14 +23,13 @@ function CardNumber(props: Props) {
       <div className="select-container">
         <span>Cards per page:</span>
         <select
+          defaultValue={10}
           onChange={(event) => {
             setItemsPerPage(Number(event.target.value));
           }}
         >
           <option value={5}>5</option>
-          <option value={10} selected>
-            10
-          </option>
+          <option value={10}>10</option>
         </select>
       </div>
       {itemsPerPage !== 10 && offset !== 0 && (

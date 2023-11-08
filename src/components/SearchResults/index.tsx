@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { IStarship } from '../../types/starship';
-import './SearchResults.css';
+import { AppContext } from '../../context';
 import Ship from '../Ship';
+import './SearchResults.css';
 
 type Props = {
-  data: IStarship[];
   loading: boolean;
   itemsPerPage: number;
   offset: number;
@@ -27,7 +27,8 @@ function reduceData(data: IStarship[], itemsPerPage: number, offset: number) {
 function SearchResults(props: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [reducedData, setReducedData] = useState([] as IStarship[]);
-  const { data, loading, itemsPerPage, offset } = props;
+  const { data } = useContext(AppContext);
+  const { loading, itemsPerPage, offset } = props;
 
   useEffect(() => {
     const reduced = reduceData(data, itemsPerPage, offset);

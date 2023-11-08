@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ErrorContext from '../context';
+import { ErrorContext } from '../context';
 
 function Error() {
   const navigate = useNavigate();

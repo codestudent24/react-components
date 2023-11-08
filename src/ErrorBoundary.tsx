@@ -1,6 +1,6 @@
 import { Component, ReactNode, ErrorInfo } from 'react';
 import Errors from './pages/Error';
-import ErrorContext, { ContextType } from './context';
+import { ErrorContext, ErrorContextType } from './context';
 
 interface Props {
   children?: ReactNode;
@@ -14,7 +14,7 @@ class ErrorBoundary extends Component<Props, State> {
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // eslint-disable-next-line no-console
     console.warn('Caught Error', error, errorInfo);
-    const { setIsError } = this.context as ContextType;
+    const { setIsError } = this.context as ErrorContextType;
     setIsError(true);
   }
 
@@ -24,7 +24,7 @@ class ErrorBoundary extends Component<Props, State> {
 
   render() {
     this.handleErrorState = this.handleErrorState.bind(this);
-    const { isError } = this.context as ContextType;
+    const { isError } = this.context as ErrorContextType;
     const { children } = this.props;
 
     return (

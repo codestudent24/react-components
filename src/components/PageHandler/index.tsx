@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default function PageHandler(props: Props) {
-  const [search] = useSearchParams();
+  const [search, setSearch] = useSearchParams();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const { hasNextPage, hasPreviousPage, loading } = props;
@@ -27,9 +27,13 @@ export default function PageHandler(props: Props) {
   };
 
   useEffect(() => {
-    const page = search.get('page');
-    if (page !== null) setCurrentPage(Number(page));
-  }, [search]);
+    let pageParam = search.get('page');
+    if (pageParam === null) {
+      pageParam = '1';
+      setSearch({ page: pageParam });
+    }
+    setCurrentPage(Number(pageParam));
+  }, [search, setSearch]);
 
   return (
     <>

@@ -1,9 +1,7 @@
 import getStarships from './api';
-import { IStarship } from '../types/starship';
 
 export default async function loadDataFromApi(
   loadingCallback: (value: boolean) => void,
-  dataCallback: (value: IStarship[]) => void,
   nextPageCallback: (value: boolean) => void,
   prevPageCallback: (value: boolean) => void,
   input: string,
@@ -23,7 +21,7 @@ export default async function loadDataFromApi(
     prevPageCallback(true);
   }
 
-  dataCallback(fetchedData.results);
-
   loadingCallback(false);
+
+  return fetchedData.results;
 }

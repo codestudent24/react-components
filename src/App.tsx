@@ -8,8 +8,9 @@ import {
 import RootLayout from './Layouts/RootLayout';
 import NotFound from './pages/NotFound';
 import Home from './pages/Home';
-import ErrorContext from './context';
+import { AppContext, ErrorContext } from './context';
 import DetailedItem from './components/DetailedItem';
+import { IStarship } from './types/starship';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,6 +25,8 @@ const router = createBrowserRouter(
 
 export default function App() {
   const [isError, setIsError] = useState<boolean>(false);
+  const [input, setInput] = useState<string>('');
+  const [data, setData] = useState<IStarship[]>([]);
   return (
     <ErrorContext.Provider
       value={useMemo(
@@ -34,7 +37,19 @@ export default function App() {
         [isError, setIsError]
       )}
     >
-      <RouterProvider router={router} />
+      <AppContext.Provider
+        value={useMemo(
+          () => ({
+            input,
+            setInput,
+            data,
+            setData,
+          }),
+          [input, setInput, data, setData]
+        )}
+      >
+        <RouterProvider router={router} />
+      </AppContext.Provider>
     </ErrorContext.Provider>
     // <BrowserRouter>
     //   <Routes>
