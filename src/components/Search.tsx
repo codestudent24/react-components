@@ -9,17 +9,23 @@ type Props = {
   setLoading: (loading: boolean) => void;
   setHasNextPage: (value: boolean) => void;
   setHasPreviousPage: (value: boolean) => void;
+  setInput: (value: string) => void;
 };
 
 function defaultInput() {
   return localStorage.getItem('searchKey') || '';
 }
 
-function Search(props: Props) {
+function Search({
+  setData,
+  setLoading,
+  setHasNextPage,
+  setHasPreviousPage,
+  setInput,
+}: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { setData, setLoading, setHasNextPage, setHasPreviousPage } = props;
   const { setIsError } = useContext(ErrorContext);
 
   useEffect(() => {
@@ -59,7 +65,9 @@ function Search(props: Props) {
         defaultValue={defaultInput()}
         ref={inputRef}
         onChange={(event) => {
-          localStorage.setItem('searchKey', event.target.value);
+          const { value } = event.target;
+          localStorage.setItem('searchKey', value);
+          setInput(value);
         }}
       />
       <button

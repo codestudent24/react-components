@@ -1,17 +1,33 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CardNumber.css';
+import { IStarship } from '../../types/starship';
+import loadDataFromApi from '../../utils/functions';
 
 type Props = {
   itemsPerPage: number;
   offset: number;
   setItemsPerPage: (value: number) => void;
   setOffset: (value: number) => void;
+  setData: (data: IStarship[]) => void;
+  setLoading: (isLoading: boolean) => void;
+  setHasNextPage: (value: boolean) => void;
+  setHasPreviousPage: (value: boolean) => void;
+  input: string;
 };
 
-function CardNumber(props: Props) {
+function CardNumber({
+  setItemsPerPage,
+  itemsPerPage,
+  setOffset,
+  offset,
+  setData,
+  setLoading,
+  setHasNextPage,
+  setHasPreviousPage,
+  input,
+}: Props) {
   const navigate = useNavigate();
-  const { setItemsPerPage, itemsPerPage, setOffset, offset } = props;
 
   useEffect(() => {
     setOffset(0);
@@ -25,6 +41,14 @@ function CardNumber(props: Props) {
         <select
           onChange={(event) => {
             setItemsPerPage(Number(event.target.value));
+            loadDataFromApi(
+              setLoading,
+              setData,
+              setHasNextPage,
+              setHasPreviousPage,
+              input,
+              1
+            );
           }}
         >
           <option value={5}>5</option>

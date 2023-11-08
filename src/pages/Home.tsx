@@ -13,6 +13,7 @@ type CurrentItemContext = {
 };
 
 function Home() {
+  const [input, setInput] = useState('');
   const [data, setData] = useState([] as IStarship[]);
   const [loading, setLoading] = useState(true);
   const [hasNextPage, setHasNextPage] = useState(false);
@@ -27,12 +28,18 @@ function Home() {
         setLoading={setLoading}
         setHasNextPage={setHasNextPage}
         setHasPreviousPage={setHasPreviousPage}
+        setInput={setInput}
       />
       <CardNumber
         itemsPerPage={itemsPerPage}
         setItemsPerPage={setItemsPerPage}
         offset={offset}
         setOffset={setOffset}
+        setData={setData}
+        setLoading={setLoading}
+        setHasNextPage={setHasNextPage}
+        setHasPreviousPage={setHasPreviousPage}
+        input={input}
       />
       <div className="results-container">
         <SearchResults
