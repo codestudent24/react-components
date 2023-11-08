@@ -51,10 +51,5 @@ export default function App() {
         <RouterProvider router={router} />
       </AppContext.Provider>
     </ErrorContext.Provider>
-    // <BrowserRouter>
-    //   <Routes>
-    //     <Route path="/" element={<ErrorBoundary />} />
-    //   </Routes>
-    // </BrowserRouter>
   );
 }

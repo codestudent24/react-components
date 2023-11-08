@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { IStarship } from '../../types/starship';
 import { AppContext } from '../../context';
 import Ship from '../Ship';
+import LoaderSpin from '../LoaderSpin';
 import './SearchResults.css';
 
 type Props = {
@@ -48,7 +49,7 @@ function SearchResults(props: Props) {
         }
       }}
     >
-      {loading && <span className="loading">loading...</span>}
+      {loading && <LoaderSpin />}
       {!loading && (
         <ul>
           {reducedData.map((elem, index) => {
