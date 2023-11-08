@@ -26,6 +26,9 @@ function Home() {
         setItemsPerPage={setItemsPerPage}
         offset={offset}
         setOffset={setOffset}
+        setLoading={setLoading}
+        setHasNextPage={setHasNextPage}
+        setHasPreviousPage={setHasPreviousPage}
       />
       <div className="results-container">
         <SearchResults

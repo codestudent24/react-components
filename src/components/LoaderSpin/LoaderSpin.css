@@ -1,3 +1,7 @@
+.loader-container {
+  margin-top: 20px;
+}
+
 .loader-spin {
     width: 48px;
     height: 48px;

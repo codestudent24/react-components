@@ -1,6 +1,6 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import './PageHandler.css';
 import { useEffect, useState } from 'react';
+import './PageHandler.css';
 
 type Props = {
   hasNextPage: boolean;

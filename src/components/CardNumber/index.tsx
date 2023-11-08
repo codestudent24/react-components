@@ -1,17 +1,30 @@
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import loadDataFromApi from '../../utils/functions';
 import './CardNumber.css';
+import { AppContext } from '../../context';
 
 type Props = {
   itemsPerPage: number;
   offset: number;
   setItemsPerPage: (value: number) => void;
   setOffset: (value: number) => void;
+  setLoading: (isLoading: boolean) => void;
+  setHasNextPage: (value: boolean) => void;
+  setHasPreviousPage: (value: boolean) => void;
 };
 
-function CardNumber(props: Props) {
+function CardNumber({
+  setItemsPerPage,
+  itemsPerPage,
+  setOffset,
+  offset,
+  setLoading,
+  setHasNextPage,
+  setHasPreviousPage,
+}: Props) {
   const navigate = useNavigate();
-  const { setItemsPerPage, itemsPerPage, setOffset, offset } = props;
+  const { input, setData } = useContext(AppContext);
 
   useEffect(() => {
     setOffset(0);
@@ -24,8 +37,16 @@ function CardNumber(props: Props) {
         <span>Cards per page:</span>
         <select
           defaultValue={10}
-          onChange={(event) => {
+          onChange={async (event) => {
             setItemsPerPage(Number(event.target.value));
+            const fetched = await loadDataFromApi(
+              setLoading,
+              setHasNextPage,
+              setHasPreviousPage,
+              input,
+              1
+            );
+            setData(fetched);
           }}
         >
           <option value={5}>5</option>
