@@ -9,40 +9,16 @@ import './Home.css';
 
 function Home() {
   const [loading, setLoading] = useState(true);
-  const [hasNextPage, setHasNextPage] = useState(false);
-  const [hasPreviousPage, setHasPreviousPage] = useState(false);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [offset, setOffset] = useState(0);
 
   return (
     <ErrorBoundary>
-      <Search
-        setLoading={setLoading}
-        setHasNextPage={setHasNextPage}
-        setHasPreviousPage={setHasPreviousPage}
-      />
-      <CardNumber
-        itemsPerPage={itemsPerPage}
-        setItemsPerPage={setItemsPerPage}
-        offset={offset}
-        setOffset={setOffset}
-        setLoading={setLoading}
-        setHasNextPage={setHasNextPage}
-        setHasPreviousPage={setHasPreviousPage}
-      />
+      <Search setLoading={setLoading} />
+      <CardNumber />
       <div className="results-container">
-        <SearchResults
-          loading={loading}
-          itemsPerPage={itemsPerPage}
-          offset={offset}
-        />
-        <Outlet />
+        <SearchResults loading={loading} />
+        <Outlet context={[loading]} />
       </div>
-      <PageHandler
-        hasNextPage={hasNextPage}
-        hasPreviousPage={hasPreviousPage}
-        loading={loading}
-      />
+      <PageHandler loading={loading} setLoading={setLoading} />
     </ErrorBoundary>
   );
 }

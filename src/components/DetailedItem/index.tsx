@@ -1,11 +1,12 @@
 import { useState, useEffect, useContext } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useOutletContext } from 'react-router-dom';
 import { IStarship } from '../../types/starship';
 import './DetailedItem.css';
 import { AppContext } from '../../context';
 
 function DetailedItem() {
   const [item, setItem] = useState<IStarship | null>(null);
+  const [loading] = useOutletContext<[boolean]>();
   const [search, setSearch] = useSearchParams();
   const { data } = useContext(AppContext);
 
@@ -21,7 +22,7 @@ function DetailedItem() {
 
   return (
     <>
-      {item !== null && (
+      {!loading && item !== null && (
         <div className="details">
           <h2>Starship {item.name}</h2>
           <p>Model: {item.model}</p>
@@ -42,7 +43,7 @@ function DetailedItem() {
           </button>
         </div>
       )}
-      {item === null && null}
+      {(loading || item === null) && null}
     </>
   );
 }

@@ -27,6 +27,8 @@ export default function App() {
   const [isError, setIsError] = useState<boolean>(false);
   const [input, setInput] = useState<string>('');
   const [data, setData] = useState<IStarship[]>([]);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
   return (
     <ErrorContext.Provider
       value={useMemo(
@@ -44,8 +46,10 @@ export default function App() {
             setInput,
             data,
             setData,
+            itemsPerPage,
+            setItemsPerPage,
           }),
-          [input, setInput, data, setData]
+          [input, setInput, data, setData, itemsPerPage, setItemsPerPage]
         )}
       >
         <RouterProvider router={router} />

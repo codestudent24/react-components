@@ -8,8 +8,6 @@ import './SearchResults.css';
 
 type Props = {
   loading: boolean;
-  itemsPerPage: number;
-  offset: number;
 };
 
 function reduceData(data: IStarship[], itemsPerPage: number, offset: number) {
@@ -25,16 +23,19 @@ function reduceData(data: IStarship[], itemsPerPage: number, offset: number) {
   return reducedData;
 }
 
-function SearchResults(props: Props) {
+function SearchResults({ loading }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [reducedData, setReducedData] = useState([] as IStarship[]);
-  const { data } = useContext(AppContext);
-  const { loading, itemsPerPage, offset } = props;
+  const { itemsPerPage, data } = useContext(AppContext);
 
   useEffect(() => {
+    const pageParam = searchParams.get('page');
+    const page = Number(pageParam);
+    let offset = 0;
+    if (itemsPerPage === 5) offset = page % 2 === 0 ? 5 : 0;
     const reduced = reduceData(data, itemsPerPage, offset);
     setReducedData(reduced);
-  }, [data, itemsPerPage, offset]);
+  }, [data, itemsPerPage, searchParams, setReducedData]);
 
   return (
     <button
@@ -50,11 +51,13 @@ function SearchResults(props: Props) {
       }}
     >
       {loading && <LoaderSpin />}
-      {!loading && (
+      {!loading && reducedData.length && (
         <ul>
           {reducedData.map((elem, index) => {
             if (index < itemsPerPage) {
-              return <Ship item={elem} key={elem.name} index={index} />;
+              if (elem) {
+                return <Ship item={elem} key={elem.name} index={index} />;
+              }
             }
             return null;
           })}

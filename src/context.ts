@@ -16,6 +16,8 @@ export type AppContextType = {
   setInput: React.Dispatch<SetStateAction<string>>;
   data: IStarship[];
   setData: React.Dispatch<IStarship[]>;
+  itemsPerPage: number;
+  setItemsPerPage: React.Dispatch<number>;
 };
 
 const AppContext = createContext<AppContextType>({
@@ -23,6 +25,8 @@ const AppContext = createContext<AppContextType>({
   setInput: () => {},
   data: [],
   setData: () => {},
+  itemsPerPage: 10,
+  setItemsPerPage: () => {},
 });
 
 export { ErrorContext, AppContext };
