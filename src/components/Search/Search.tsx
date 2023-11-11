@@ -1,8 +1,8 @@
 import { useRef, useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AppContext } from '../../context';
-import loadDataFromApi from '../../utils/functions';
 import ErrorButton from './ErrorButton';
+import getStarships from '../../utils/api';
 
 type Props = {
   setLoading: (loading: boolean) => void;
@@ -14,7 +14,7 @@ function defaultInput() {
 
 function Search({ setLoading }: Props) {
   const [, setSearchParams] = useSearchParams();
-  const { input, setInput, setData } = useContext(AppContext);
+  const { input, setInput, setData, setCount } = useContext(AppContext);
   const inputRef = useRef(null);
 
   return (
@@ -33,9 +33,12 @@ function Search({ setLoading }: Props) {
         type="button"
         className="button-search"
         onClick={async () => {
+          setLoading(true);
           setSearchParams({ page: '1' });
-          const fetched = await loadDataFromApi(setLoading, input, 1);
-          setData(fetched);
+          const fetched = await getStarships(input, 1);
+          setData(fetched.results);
+          setCount(fetched.count);
+          setLoading(false);
         }}
       >
         Search

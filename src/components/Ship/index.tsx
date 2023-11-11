@@ -1,5 +1,5 @@
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { IStarship } from '../types/starship';
+import { IStarship } from '../../types/starship';
 import './Ship.css';
 
 type ShipProps = {
@@ -7,10 +7,9 @@ type ShipProps = {
   index: number;
 };
 
-function Ship(props: ShipProps) {
+function Ship({ item, index }: ShipProps) {
   const [search] = useSearchParams();
   const navigate = useNavigate();
-  const { item, index } = props;
 
   function showDetails(details: number) {
     const page = search.get('page');

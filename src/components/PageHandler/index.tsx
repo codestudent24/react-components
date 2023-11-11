@@ -3,33 +3,23 @@ import { useSearchParams } from 'react-router-dom';
 import { AppContext } from '../../context';
 import getStarships from '../../utils/api';
 import './PageHandler.css';
+import { hasNext, hasPrevious } from './pageFunctions';
 
 type Props = {
   loading: boolean;
   setLoading: (value: boolean) => void;
 };
 
-function hasPrevious(page: number): boolean {
-  return page > 1;
-}
-
-function hasNext(count: number, page: number, itemsPerPage: number) {
-  return count > page * itemsPerPage;
-}
-
 export default function PageHandler({ loading, setLoading }: Props) {
   const [search, setSearch] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
-  const [count, setCount] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(true);
   const [hasPreviousPage, setHasPreviousPage] = useState(false);
-  const { itemsPerPage, setData } = useContext(AppContext);
+  const { itemsPerPage, setData, count, setCount } = useContext(AppContext);
 
   const handleDecrement = async (value: number) => {
     if (value < 2) return;
     const goToPage = value - 1;
-    setHasPreviousPage(hasPrevious(goToPage));
-    setHasNextPage(true);
     setSearch({ page: `${goToPage}` });
   };
 
@@ -37,21 +27,8 @@ export default function PageHandler({ loading, setLoading }: Props) {
     if (value > 8) return;
     if (itemsPerPage === 10 && value > 4) return;
     const goToPage = value + 1;
-    setHasPreviousPage(true);
-    setHasNextPage(hasNext(count, goToPage, itemsPerPage));
     setSearch({ page: `${goToPage}` });
   };
-
-  useEffect(() => {
-    let pageParam = search.get('page');
-    if (pageParam === null) {
-      pageParam = '1';
-      setSearch({ page: pageParam });
-    }
-    const page = Number(pageParam);
-    if (page === 1) setHasPreviousPage(false);
-    setCurrentPage(page);
-  }, [search, setSearch]);
 
   useEffect(() => {
     const pageParam = search.get('page') || '1';
@@ -65,17 +42,24 @@ export default function PageHandler({ loading, setLoading }: Props) {
       const fetched = await getStarships(input, page);
       const fetchedCount = fetched.count;
       setCount(fetchedCount);
-      if (fetchedCount < itemsPerPage) {
-        setHasNextPage(false);
-      } else {
-        setHasNextPage(true);
-      }
       setData(fetched.results);
       setLoading(false);
     }
 
     updateData();
-  }, [setLoading, setData, itemsPerPage, search]);
+  }, [setLoading, setData, setCount, itemsPerPage, search]);
+
+  useEffect(() => {
+    let pageParam = search.get('page');
+    if (pageParam === null) {
+      pageParam = '1';
+      setSearch({ page: pageParam });
+    }
+    const page = Number(pageParam);
+    setCurrentPage(page);
+    setHasPreviousPage(hasPrevious(page));
+    setHasNextPage(hasNext(count, page, itemsPerPage));
+  }, [setSearch, setCurrentPage, count, search, itemsPerPage]);
 
   return (
     <>

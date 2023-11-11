@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { IStarship } from '../../types/starship';
 import { AppContext } from '../../context';
+import reduceData from './reduceFunction';
 import Ship from '../Ship';
 import LoaderSpin from '../LoaderSpin';
 import './SearchResults.css';
@@ -10,21 +11,8 @@ type Props = {
   loading: boolean;
 };
 
-function reduceData(data: IStarship[], itemsPerPage: number, offset: number) {
-  if (itemsPerPage === 10) return data;
-
-  const max = data.length < itemsPerPage ? data.length : itemsPerPage;
-  const reducedData: IStarship[] = [];
-
-  for (let i = 0; i < max; i += 1) {
-    reducedData.push(data[i + offset]);
-  }
-
-  return reducedData;
-}
-
 function SearchResults({ loading }: Props) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [reducedData, setReducedData] = useState([] as IStarship[]);
   const { itemsPerPage, data } = useContext(AppContext);
 
@@ -38,18 +26,7 @@ function SearchResults({ loading }: Props) {
   }, [data, itemsPerPage, searchParams, setReducedData]);
 
   return (
-    <button
-      type="button"
-      className="data-container"
-      onClick={(event) => {
-        const element = event.target as HTMLElement;
-        const target = element.closest('button');
-        if (target?.className === 'data-container') {
-          const pageParam = searchParams.get('page');
-          if (pageParam !== null) setSearchParams({ page: pageParam });
-        }
-      }}
-    >
+    <div className="data-container">
       {loading && <LoaderSpin />}
       {!loading && reducedData.length && (
         <ul>
@@ -63,7 +40,7 @@ function SearchResults({ loading }: Props) {
           })}
         </ul>
       )}
-    </button>
+    </div>
   );
 }
 
