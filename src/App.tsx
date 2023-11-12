@@ -12,7 +12,7 @@ import { AppContext, ErrorContext } from './context';
 import DetailedItem from './components/DetailedItem';
 import { IStarship } from './types/starship';
 
-const router = createBrowserRouter(
+export const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
       <Route path="/" element={<Home />}>

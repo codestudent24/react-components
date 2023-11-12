@@ -32,6 +32,7 @@ function Search({ setLoading }: Props) {
       <button
         type="button"
         className="button-search"
+        data-testid="button-search"
         onClick={async () => {
           setLoading(true);
           setSearchParams({ page: '1' });

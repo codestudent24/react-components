@@ -20,6 +20,7 @@ function Ship({ item, index }: ShipProps) {
     <li>
       <button
         type="button"
+        data-testid="ship-button"
         onClick={() => {
           showDetails(index);
         }}

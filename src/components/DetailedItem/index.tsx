@@ -1,8 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
 import { useSearchParams, useOutletContext } from 'react-router-dom';
 import { IStarship } from '../../types/starship';
-import './DetailedItem.css';
 import { AppContext } from '../../context';
+import './DetailedItem.css';
+import LoaderSpin from '../LoaderSpin';
 
 function DetailedItem() {
   const [item, setItem] = useState<IStarship | null>(null);
@@ -43,6 +44,7 @@ function DetailedItem() {
           </button>
         </div>
       )}
+      {loading && <LoaderSpin />}
       {(loading || item === null) && null}
     </>
   );

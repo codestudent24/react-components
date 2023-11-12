@@ -28,6 +28,9 @@ function SearchResults({ loading }: Props) {
   return (
     <div className="data-container">
       {loading && <LoaderSpin />}
+      {!loading && reducedData.length === 0 && (
+        <h3>We have no more ships for you!</h3>
+      )}
       {!loading && reducedData.length && (
         <ul>
           {reducedData.map((elem, index) => {

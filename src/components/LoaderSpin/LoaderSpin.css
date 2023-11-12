@@ -4,10 +4,10 @@
 }
 
 .loader-spin {
-    width: 48px;
-    height: 48px;
-    display: inline-block;
-    animation: rotation 1.5s linear infinite;
+  width: 48px;
+  height: 48px;
+  display: inline-block;
+  animation: rotation 1.5s linear infinite;
 }
 
 @keyframes rotation {
