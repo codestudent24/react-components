@@ -24,7 +24,7 @@ function DetailedItem() {
   return (
     <>
       {!loading && item !== null && (
-        <div className="details">
+        <div className="details" data-testid="detailed-card">
           <h2>Starship {item.name}</h2>
           <p>Model: {item.model}</p>
           <p>Class: {item.starship_class}</p>

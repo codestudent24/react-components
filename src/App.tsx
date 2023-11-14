@@ -1,27 +1,7 @@
 import { useMemo, useState } from 'react';
-import {
-  createBrowserRouter,
-  Route,
-  RouterProvider,
-  createRoutesFromElements,
-} from 'react-router-dom';
-import RootLayout from './Layouts/RootLayout';
-import NotFound from './pages/NotFound';
-import Home from './pages/Home';
 import { AppContext, ErrorContext } from './context';
-import DetailedItem from './components/DetailedItem';
 import { IStarship } from './types/starship';
-
-export const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path="/" element={<RootLayout />}>
-      <Route path="/" element={<Home />}>
-        <Route path="detailed" element={<DetailedItem />} />
-      </Route>
-      <Route path="*" element={<NotFound />} />
-    </Route>
-  )
-);
+import Home from './pages/Home';
 
 export default function App() {
   const [isError, setIsError] = useState<boolean>(false);
@@ -64,7 +44,7 @@ export default function App() {
           ]
         )}
       >
-        <RouterProvider router={router} />
+        <Home />
       </AppContext.Provider>
     </ErrorContext.Provider>
   );

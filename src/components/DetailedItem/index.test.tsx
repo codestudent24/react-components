@@ -1,7 +1,7 @@
 import { MemoryRouter, useOutletContext } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { initialContextState } from '../../utils/mockData';
+import { mockData, initialContextState } from '../../utils/mockData';
 import DetailedItem from '.';
 import { AppContext } from '../../context';
 
@@ -20,10 +20,16 @@ describe('Test render of detailed item', () => {
         </AppContext.Provider>
       </MemoryRouter>
     );
-    const classDescription = await findByText(/class/i);
-    const lengthDescription = await findByText(/length/i);
+    const classDescription = await findByText(
+      `Class: ${mockData[0].starship_class}`
+    );
+    const lengthDescription = await findByText(`Length: ${mockData[0].length}`);
+    const cost = await findByText(
+      `Cost in galactic credits: ${mockData[0].cost_in_credits}`
+    );
     expect(classDescription).not.toBeNull();
     expect(lengthDescription).not.toBeNull();
+    expect(cost).not.toBeNull();
   });
   test('Click on close button closes detailed card', async () => {
     (useOutletContext as jest.Mock).mockReturnValue([false]);
