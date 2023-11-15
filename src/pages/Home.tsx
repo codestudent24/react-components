@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Search from '../components/Search/Search';
 import SearchResults from '../components/SearchResults';
@@ -8,17 +7,15 @@ import CardNumber from '../components/CardNumber';
 import './Home.css';
 
 function Home() {
-  const [loading, setLoading] = useState(true);
-
   return (
     <ErrorBoundary>
-      <Search setLoading={setLoading} />
+      <Search />
       <CardNumber />
       <div className="results-container">
-        <SearchResults loading={loading} />
-        <Outlet context={[loading]} />
+        <SearchResults />
+        <Outlet />
       </div>
-      <PageHandler loading={loading} setLoading={setLoading} />
+      <PageHandler />
     </ErrorBoundary>
   );
 }

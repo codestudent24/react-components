@@ -4,16 +4,17 @@ import './Ship.css';
 
 type ShipProps = {
   item: IStarship;
-  index: number;
 };
 
-function Ship({ item, index }: ShipProps) {
+function Ship({ item }: ShipProps) {
   const [search] = useSearchParams();
   const navigate = useNavigate();
 
-  function showDetails(details: number) {
+  function showDetails(url: string) {
+    // url: "[0]https:/[1] /[2] swapi.dev/[3] api/[4] starships/[5] 9/[6] "
+    const detailsIndex = url.split('/')[5];
     const page = search.get('page');
-    navigate(`detailed/?page=${page}&details=${details}`);
+    navigate(`detailed/?page=${page}&details=${detailsIndex}`);
   }
 
   return (
@@ -22,7 +23,7 @@ function Ship({ item, index }: ShipProps) {
         type="button"
         data-testid="ship-button"
         onClick={() => {
-          showDetails(index);
+          showDetails(item.url);
         }}
       >
         <h2>Starship {item.name}</h2>

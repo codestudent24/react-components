@@ -1,53 +1,48 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { AppContext } from '../../context';
 import getStarships from '../../utils/api';
-import './PageHandler.css';
 import { hasNext, hasPrevious } from './pageFunctions';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { setDataLoading, setData, setCount } from '../../redux/dataSlice';
+import './PageHandler.css';
 
-type Props = {
-  loading: boolean;
-  setLoading: (value: boolean) => void;
-};
-
-export default function PageHandler({ loading, setLoading }: Props) {
+export default function PageHandler() {
   const [search, setSearch] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(true);
   const [hasPreviousPage, setHasPreviousPage] = useState(false);
-  const { itemsPerPage, setData, count, setCount } = useContext(AppContext);
+  const { dataLoading, count, itemsPerPage, input } = useAppSelector(
+    (state) => state.search
+  );
+  const dispatch = useAppDispatch();
 
-  const handleDecrement = async (value: number) => {
+  const handleDecrement = (value: number) => {
     if (value < 2) return;
     const goToPage = value - 1;
     setSearch({ page: `${goToPage}` });
   };
 
-  const handleIncrement = async (value: number) => {
-    if (value > 8) return;
-    if (itemsPerPage === 10 && value > 4) return;
+  const handleIncrement = (value: number) => {
     const goToPage = value + 1;
     setSearch({ page: `${goToPage}` });
   };
 
   useEffect(() => {
     const pageParam = search.get('page') || '1';
-    const input = localStorage.getItem('searchKey') || '';
-
     let page = Number(pageParam);
     if (itemsPerPage === 5) page = page < 3 ? 1 : Math.ceil(page / 2);
 
     async function updateData() {
-      setLoading(true);
+      dispatch(setDataLoading(true));
       const fetched = await getStarships(input, page);
       const fetchedCount = fetched.count;
-      setCount(fetchedCount);
-      setData(fetched.results);
-      setLoading(false);
+      dispatch(setCount(fetchedCount));
+      dispatch(setData(fetched.results));
+      dispatch(setDataLoading(false));
     }
 
     updateData();
-  }, [setLoading, setData, setCount, itemsPerPage, search]);
+  }, [dispatch, input, itemsPerPage, search]);
 
   useEffect(() => {
     let pageParam = search.get('page');
@@ -63,8 +58,8 @@ export default function PageHandler({ loading, setLoading }: Props) {
 
   return (
     <>
-      {loading && null}
-      {!loading && (
+      {dataLoading && null}
+      {!dataLoading && (
         <div className="page-buttons">
           {hasPreviousPage && (
             <button

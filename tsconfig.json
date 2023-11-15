@@ -21,10 +21,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": [
-    ".eslintrc.cjs",
-    "babel.config.js",
-    "jest.config.ts",
-    "src"
-  ],
+  "include": [".eslintrc.cjs", "babel.config.js", "jest.config.ts", "src"]
 }

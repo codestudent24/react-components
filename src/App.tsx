@@ -1,14 +1,11 @@
 import { useMemo, useState } from 'react';
-import { AppContext, ErrorContext } from './context';
-import { IStarship } from './types/starship';
+import { Provider } from 'react-redux';
+import { ErrorContext } from './context';
 import Home from './pages/Home';
+import Store from './redux/store';
 
 export default function App() {
   const [isError, setIsError] = useState<boolean>(false);
-  const [input, setInput] = useState<string>('');
-  const [data, setData] = useState<IStarship[]>([]);
-  const [count, setCount] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   return (
     <ErrorContext.Provider
@@ -20,32 +17,9 @@ export default function App() {
         [isError, setIsError]
       )}
     >
-      <AppContext.Provider
-        value={useMemo(
-          () => ({
-            input,
-            setInput,
-            data,
-            setData,
-            count,
-            setCount,
-            itemsPerPage,
-            setItemsPerPage,
-          }),
-          [
-            input,
-            setInput,
-            data,
-            setData,
-            count,
-            setCount,
-            itemsPerPage,
-            setItemsPerPage,
-          ]
-        )}
-      >
+      <Provider store={Store}>
         <Home />
-      </AppContext.Provider>
+      </Provider>
     </ErrorContext.Provider>
   );
 }

@@ -1,45 +1,39 @@
-import { useRef, useContext } from 'react';
+import { useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { AppContext } from '../../context';
-import ErrorButton from './ErrorButton';
 import getStarships from '../../utils/api';
+import { useAppDispatch } from '../../redux/hooks';
+import {
+  setDataLoading,
+  setData,
+  setInput,
+  setCount,
+} from '../../redux/dataSlice';
+import ErrorButton from './ErrorButton';
 
-type Props = {
-  setLoading: (loading: boolean) => void;
-};
-
-function defaultInput() {
-  return localStorage.getItem('searchKey') || '';
-}
-
-function Search({ setLoading }: Props) {
+function Search() {
   const [, setSearchParams] = useSearchParams();
-  const { input, setInput, setData, setCount } = useContext(AppContext);
+  const dispatch = useAppDispatch();
   const inputRef = useRef(null);
 
   return (
     <div className="search">
-      <input
-        type="text"
-        defaultValue={defaultInput()}
-        ref={inputRef}
-        onChange={(event) => {
-          const { value } = event.target;
-          localStorage.setItem('searchKey', value);
-          setInput(value);
-        }}
-      />
+      <input type="text" defaultValue="" ref={inputRef} />
       <button
         type="button"
         className="button-search"
         data-testid="button-search"
         onClick={async () => {
-          setLoading(true);
-          setSearchParams({ page: '1' });
-          const fetched = await getStarships(input, 1);
-          setData(fetched.results);
-          setCount(fetched.count);
-          setLoading(false);
+          const inputElement = inputRef.current as HTMLInputElement | null;
+          if (inputElement) {
+            const { value } = inputElement;
+            dispatch(setInput(value));
+            dispatch(setDataLoading(true));
+            setSearchParams({ page: '1' });
+            const fetched = await getStarships(value, 1);
+            dispatch(setData(fetched.results));
+            dispatch(setCount(fetched.count));
+            dispatch(setDataLoading(false));
+          }
         }}
       >
         Search

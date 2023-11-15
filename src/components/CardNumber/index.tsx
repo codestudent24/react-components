@@ -1,15 +1,12 @@
-import { useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { setItemsPerPage } from '../../redux/dataSlice';
 import './CardNumber.css';
-import { AppContext } from '../../context';
 
 function CardNumber() {
-  const navigate = useNavigate();
-  const { itemsPerPage, setItemsPerPage } = useContext(AppContext);
-
-  useEffect(() => {
-    navigate('/?pages=1');
-  }, [itemsPerPage, navigate]);
+  const itemsPerPage = useAppSelector((state) => state.search.itemsPerPage);
+  const [, setSearch] = useSearchParams();
+  const dispatch = useAppDispatch();
 
   return (
     <div className="select-container">
@@ -17,7 +14,9 @@ function CardNumber() {
       <select
         value={itemsPerPage}
         onChange={async (event) => {
-          setItemsPerPage(Number(event.target.value));
+          const amount = Number(event.target.value);
+          setSearch({ page: '1' });
+          dispatch(setItemsPerPage(amount));
         }}
       >
         <option value={5}>5</option>

@@ -1,29 +1,37 @@
-import { useState, useEffect, useContext } from 'react';
-import { useSearchParams, useOutletContext } from 'react-router-dom';
-import { IStarship } from '../../types/starship';
-import { AppContext } from '../../context';
-import './DetailedItem.css';
+import { useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { getStarshipByIndex } from '../../utils/api';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { setItem, setItemLoading } from '../../redux/dataSlice';
 import LoaderSpin from '../LoaderSpin';
+import './DetailedItem.css';
 
 function DetailedItem() {
-  const [item, setItem] = useState<IStarship | null>(null);
-  const [loading] = useOutletContext<[boolean]>();
-  const [search, setSearch] = useSearchParams();
-  const { data } = useContext(AppContext);
+  const { item, itemLoading } = useAppSelector((state) => state.search);
+  const [search] = useSearchParams();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const detailsParam = search.get('details');
-    if (detailsParam === null) {
-      setItem(null);
-    } else {
-      const index = Number(detailsParam);
-      setItem(data[index]);
+
+    async function getStarship(param: string | null) {
+      if (param === null) {
+        dispatch(setItem(null));
+      } else {
+        dispatch(setItemLoading(true));
+        const fetchedItem = await getStarshipByIndex(param);
+        dispatch(setItem(fetchedItem));
+        dispatch(setItemLoading(false));
+      }
     }
-  }, [data, search, item]);
+
+    getStarship(detailsParam);
+  }, [dispatch, search]);
 
   return (
     <>
-      {!loading && item !== null && (
+      {!itemLoading && item !== null && (
         <div className="details" data-testid="detailed-card">
           <h2>Starship {item.name}</h2>
           <p>Model: {item.model}</p>
@@ -37,15 +45,15 @@ function DetailedItem() {
             className="button-close"
             onClick={() => {
               const pageParam = search.get('page');
-              if (pageParam !== null) setSearch({ page: pageParam });
+              if (pageParam) navigate(`/?page=${pageParam}`);
             }}
           >
             X
           </button>
         </div>
       )}
-      {loading && <LoaderSpin />}
-      {(loading || item === null) && null}
+      {itemLoading && <LoaderSpin />}
+      {(itemLoading || item === null) && null}
     </>
   );
 }

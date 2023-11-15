@@ -1,16 +1,20 @@
-import { IStarshipResponse } from '../types/starship';
+import { IStarship, IStarshipResponse } from '../types/starship';
 
-const baseURL = 'https://swapi.dev/api/';
+const baseURL = 'https://swapi.dev/api/starships/';
 
 const getStarships = async (search: string = '', page: number = 1) => {
   const requestURL =
-    search === ''
-      ? `starships?page=${page}`
-      : `starships/?search=${search}&page=${page}`;
+    search === '' ? `?page=${page}` : `?search=${search}&page=${page}`;
   const response = await fetch(`${baseURL}${requestURL}`);
 
   const data = (await response.json()) as IStarshipResponse;
 
+  return data;
+};
+
+export const getStarshipByIndex = async (index: string) => {
+  const response = await fetch(`${baseURL}${index}`);
+  const data = (await response.json()) as IStarship;
   return data;
 };
 
