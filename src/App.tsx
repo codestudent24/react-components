@@ -1,19 +1,51 @@
-import { PureComponent } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { AppContext, ErrorContext } from './context';
+import { IStarship } from './types/starship';
 import Home from './pages/Home';
-import NotFound from './pages/notFound';
 
-class App extends PureComponent {
-  render() {
-    return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    );
-  }
+export default function App() {
+  const [isError, setIsError] = useState<boolean>(false);
+  const [input, setInput] = useState<string>('');
+  const [data, setData] = useState<IStarship[]>([]);
+  const [count, setCount] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  return (
+    <ErrorContext.Provider
+      value={useMemo(
+        () => ({
+          isError,
+          setIsError,
+        }),
+        [isError, setIsError]
+      )}
+    >
+      <AppContext.Provider
+        value={useMemo(
+          () => ({
+            input,
+            setInput,
+            data,
+            setData,
+            count,
+            setCount,
+            itemsPerPage,
+            setItemsPerPage,
+          }),
+          [
+            input,
+            setInput,
+            data,
+            setData,
+            count,
+            setCount,
+            itemsPerPage,
+            setItemsPerPage,
+          ]
+        )}
+      >
+        <Home />
+      </AppContext.Provider>
+    </ErrorContext.Provider>
+  );
 }
-
-export default App;
