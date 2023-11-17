@@ -1,48 +1,49 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import getStarships from '../../utils/api';
-import { hasNext, hasPrevious } from './pageFunctions';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { setDataLoading, setData, setCount } from '../../redux/dataSlice';
+import { setCount, setData, setDataLoading } from '../../redux/dataSlice';
+import { setCurrentPage, setHasNext, setHasPrev } from '../../redux/pageSlice';
+import { useStarshipListQuery } from '../../redux/query';
+import { createParam } from '../../utils/functions';
+import {
+  handleDecrement,
+  handleIncrement,
+  hasNextPage,
+  hasPreviousPage,
+} from './pageFunctions';
 import './PageHandler.css';
 
 export default function PageHandler() {
   const [search, setSearch] = useSearchParams();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [hasNextPage, setHasNextPage] = useState(true);
-  const [hasPreviousPage, setHasPreviousPage] = useState(false);
+  const { currentPage, hasNext, hasPrev } = useAppSelector(
+    (state) => state.page
+  );
   const { dataLoading, count, itemsPerPage, input } = useAppSelector(
     (state) => state.search
   );
   const dispatch = useAppDispatch();
+  const { data, isFetching } = useStarshipListQuery(
+    createParam(currentPage, itemsPerPage, input)
+  );
 
-  const handleDecrement = (value: number) => {
-    if (value < 2) return;
-    const goToPage = value - 1;
-    setSearch({ page: `${goToPage}` });
-  };
-
-  const handleIncrement = (value: number) => {
-    const goToPage = value + 1;
-    setSearch({ page: `${goToPage}` });
-  };
+  function updatePage(myPage: number) {
+    setSearch({ page: `${myPage}` });
+    dispatch(setCurrentPage(myPage));
+    dispatch(setHasPrev(hasPreviousPage(myPage)));
+    dispatch(setHasNext(hasNextPage(count, myPage, itemsPerPage)));
+  }
 
   useEffect(() => {
-    const pageParam = search.get('page') || '1';
-    let page = Number(pageParam);
-    if (itemsPerPage === 5) page = page < 3 ? 1 : Math.ceil(page / 2);
-
-    async function updateData() {
+    if (isFetching) {
       dispatch(setDataLoading(true));
-      const fetched = await getStarships(input, page);
-      const fetchedCount = fetched.count;
-      dispatch(setCount(fetchedCount));
-      dispatch(setData(fetched.results));
+    } else {
       dispatch(setDataLoading(false));
+      if (data) {
+        dispatch(setData(data.results));
+        dispatch(setCount(data.count));
+      }
     }
-
-    updateData();
-  }, [dispatch, input, itemsPerPage, search]);
+  }, [dispatch, data, isFetching]);
 
   useEffect(() => {
     let pageParam = search.get('page');
@@ -50,35 +51,31 @@ export default function PageHandler() {
       pageParam = '1';
       setSearch({ page: pageParam });
     }
-    const page = Number(pageParam);
-    setCurrentPage(page);
-    setHasPreviousPage(hasPrevious(page));
-    setHasNextPage(hasNext(count, page, itemsPerPage));
-  }, [setSearch, setCurrentPage, count, search, itemsPerPage]);
+  }, [search, setSearch]);
 
   return (
     <>
       {dataLoading && null}
       {!dataLoading && (
         <div className="page-buttons">
-          {hasPreviousPage && (
+          {hasPrev && (
             <button
               type="button"
               className="button-page"
               onClick={() => {
-                handleDecrement(currentPage);
+                handleDecrement(currentPage, updatePage);
               }}
             >
               &lt;
             </button>
           )}
           <div className="current-page">Page {currentPage}</div>
-          {hasNextPage && (
+          {hasNext && (
             <button
               type="button"
               className="button-page"
               onClick={() => {
-                handleIncrement(currentPage);
+                handleIncrement(currentPage, updatePage);
               }}
             >
               &gt;

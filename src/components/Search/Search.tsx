@@ -1,23 +1,19 @@
 import { useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import getStarships from '../../utils/api';
-import { useAppDispatch } from '../../redux/hooks';
-import {
-  setDataLoading,
-  setData,
-  setInput,
-  setCount,
-} from '../../redux/dataSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { setInput } from '../../redux/dataSlice';
+import { setCurrentPage } from '../../redux/pageSlice';
 import ErrorButton from './ErrorButton';
 
 function Search() {
+  const input = useAppSelector((state) => state.search.input);
+  const inputRef = useRef(null);
   const [, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const inputRef = useRef(null);
 
   return (
     <div className="search">
-      <input type="text" defaultValue="" ref={inputRef} />
+      <input type="text" defaultValue={input} ref={inputRef} />
       <button
         type="button"
         className="button-search"
@@ -27,12 +23,8 @@ function Search() {
           if (inputElement) {
             const { value } = inputElement;
             dispatch(setInput(value));
-            dispatch(setDataLoading(true));
+            dispatch(setCurrentPage(1));
             setSearchParams({ page: '1' });
-            const fetched = await getStarships(value, 1);
-            dispatch(setData(fetched.results));
-            dispatch(setCount(fetched.count));
-            dispatch(setDataLoading(false));
           }
         }}
       >

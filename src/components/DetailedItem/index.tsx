@@ -1,12 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { getStarshipByIndex } from '../../utils/api';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setItem, setItemLoading } from '../../redux/dataSlice';
+import { useStarshipDetailQuery } from '../../redux/query';
 import LoaderSpin from '../LoaderSpin';
 import './DetailedItem.css';
 
 function DetailedItem() {
+  const [detailsIndex, setDetailsIndex] = useState('2');
+  const { data, isFetching } = useStarshipDetailQuery(detailsIndex);
   const { item, itemLoading } = useAppSelector((state) => state.search);
   const [search] = useSearchParams();
   const dispatch = useAppDispatch();
@@ -14,23 +16,23 @@ function DetailedItem() {
 
   useEffect(() => {
     const detailsParam = search.get('details');
+    if (detailsParam) setDetailsIndex(detailsParam);
+  }, [dispatch, search]);
 
-    async function getStarship(param: string | null) {
-      if (param === null) {
-        dispatch(setItem(null));
-      } else {
-        dispatch(setItemLoading(true));
-        const fetchedItem = await getStarshipByIndex(param);
-        dispatch(setItem(fetchedItem));
-        dispatch(setItemLoading(false));
+  useEffect(() => {
+    if (isFetching) {
+      dispatch(setItemLoading(true));
+    } else {
+      dispatch(setItemLoading(false));
+      if (data) {
+        dispatch(setItem(data));
       }
     }
-
-    getStarship(detailsParam);
-  }, [dispatch, search]);
+  }, [dispatch, data, isFetching]);
 
   return (
     <>
+      {itemLoading && <LoaderSpin />}
       {!itemLoading && item !== null && (
         <div className="details" data-testid="detailed-card">
           <h2>Starship {item.name}</h2>
@@ -52,8 +54,7 @@ function DetailedItem() {
           </button>
         </div>
       )}
-      {itemLoading && <LoaderSpin />}
-      {(itemLoading || item === null) && null}
+      {item === null && null}
     </>
   );
 }

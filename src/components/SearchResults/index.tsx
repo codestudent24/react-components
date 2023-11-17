@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { IStarship } from '../../types/starship';
 import { useAppSelector } from '../../redux/hooks';
 import reduceData from './reduceFunction';
@@ -8,26 +7,25 @@ import Ship from '../Ship';
 import './SearchResults.css';
 
 function SearchResults() {
-  const { dataLoading, data, itemsPerPage } = useAppSelector(
+  const { itemsPerPage, data, dataLoading } = useAppSelector(
     (state) => state.search
   );
-  const [searchParams] = useSearchParams();
+  const currentPage = useAppSelector((state) => state.page.currentPage);
   const [reducedData, setReducedData] = useState([] as IStarship[]);
 
   useEffect(() => {
-    const pageParam = searchParams.get('page');
-    const page = Number(pageParam);
-    const reduced = reduceData(data, itemsPerPage, page);
-    setReducedData(reduced);
-  }, [data, itemsPerPage, searchParams, setReducedData]);
+    if (data) {
+      const reduced = reduceData(data, itemsPerPage, currentPage);
+      setReducedData(reduced);
+    }
+  }, [data, itemsPerPage, currentPage, setReducedData]);
+
+  if (dataLoading) return <LoaderSpin />;
 
   return (
     <div className="data-container">
-      {dataLoading && <LoaderSpin />}
-      {!dataLoading && reducedData.length === 0 && (
-        <h3>We have no more ships for you!</h3>
-      )}
-      {!dataLoading && reducedData.length && (
+      {reducedData.length === 0 && <h3>We have no more ships for you!</h3>}
+      {reducedData.length && (
         <ul>
           {reducedData.map((elem, index) => {
             if (index < itemsPerPage) {
