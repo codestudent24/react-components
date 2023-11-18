@@ -1,31 +1,34 @@
-/* eslint-disable react/jsx-no-constructed-context-values */
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import SearchResults from '.';
-import { initialContextState } from '../../utils/mockData';
-import { AppContext } from '../../context';
+import { Provider } from 'react-redux';
+import server from '../../tests/server';
+import Store from '../../redux/store';
+import Home from '../../pages/Home';
 
 describe('Test render of search results', () => {
-  test('Test search results with 10 items per page', async () => {
+  beforeAll(() => server.listen());
+  afterEach(() => server.resetHandlers());
+
+  test('SearchResults displays correct amount of items', async () => {
     render(
       <MemoryRouter>
-        <AppContext.Provider value={initialContextState}>
-          <SearchResults loading={false} />
-        </AppContext.Provider>
+        <Provider store={Store}>
+          <Home />
+        </Provider>
       </MemoryRouter>
     );
-    const itemList = await screen.findAllByRole('listitem');
-    expect(itemList.length).toBe(10);
+    await waitFor(() => {
+      let itemList = screen.getAllByRole('listitem');
+      expect(itemList.length).toBe(10);
+      const input = screen.getByRole('textbox');
+      userEvent.type(input, 'AAA999AAA');
+      const searchButton = screen.getByTestId('button-search');
+      expect(searchButton).not.toBeNull();
+      fireEvent.click(searchButton);
+      itemList = screen.queryAllByRole('listitem');
+      expect(itemList.length).toBe(0);
+    });
   });
-  test('Test search results with null data has appropriate header', async () => {
-    render(
-      <MemoryRouter>
-        <AppContext.Provider value={{ ...initialContextState, data: [] }}>
-          <SearchResults loading={false} />
-        </AppContext.Provider>
-      </MemoryRouter>
-    );
-    await screen.findByText(/We have no more ships for you!/i);
-    expect(screen.queryAllByRole('listitem').length).toBe(0);
-  });
+  afterAll(() => server.close());
 });

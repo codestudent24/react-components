@@ -1,19 +1,19 @@
-import fetchMock from 'jest-fetch-mock';
-import { IStarshipResponse } from '../types/starship';
-import getStarships from './api';
+import server from '../tests/server';
+import getStarships, { getStarshipByIndex } from './api';
 import { mockData } from './mockData';
 
-const myMockResponse: IStarshipResponse = {
-  count: 10,
-  previous: null,
-  next: null,
-  results: mockData,
-};
+server.listen();
 
-fetchMock.enableMocks();
-fetchMock.mockResponse(JSON.stringify(myMockResponse));
-
-it('Get mock data by getStarships', async () => {
-  const response = await getStarships();
-  expect(response.results).toEqual(mockData);
+describe('MSW returns mock data', () => {
+  beforeAll(() => server.listen());
+  afterEach(() => server.resetHandlers());
+  it('Base URL', async () => {
+    const response = await getStarships();
+    expect(response.results).toEqual(mockData);
+  });
+  it('URL with Id', async () => {
+    const response = await getStarshipByIndex('3');
+    expect(response).toEqual(mockData[3]);
+  });
+  afterAll(() => server.close());
 });

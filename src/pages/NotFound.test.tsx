@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { render } from '@testing-library/react';
 import Home from './Home';

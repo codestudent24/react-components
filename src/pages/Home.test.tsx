@@ -5,26 +5,26 @@ import {
   createMemoryRouter,
   createRoutesFromElements,
 } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import { fireEvent, render, waitFor, screen } from '@testing-library/react';
-import fetchMock from 'jest-fetch-mock';
-import { AppContext } from '../context';
-import { initialContextState, myMockResponse } from '../utils/mockData';
-import RootLayout from '../Layouts/RootLayout';
+import userEvent from '@testing-library/user-event';
+import server from '../tests/server';
+import Store from '../redux/store';
 import Home from './Home';
+import RootLayout from '../Layouts/RootLayout';
 import DetailedItem from '../components/DetailedItem';
-
-fetchMock.enableMocks();
-fetchMock.mockResponse(JSON.stringify(myMockResponse));
-
-const contextState = { ...initialContextState, count: 20 };
+import { mockData } from '../utils/mockData';
 
 describe('Test render full page', () => {
+  beforeAll(() => server.listen());
+  afterEach(() => server.resetHandlers());
+
   test('Component updates URL query parameter when page changes', async () => {
     const { getByText } = render(
       <BrowserRouter>
-        <AppContext.Provider value={contextState}>
+        <Provider store={Store}>
           <Home />
-        </AppContext.Provider>
+        </Provider>
       </BrowserRouter>
     );
     await waitFor(() => {
@@ -39,7 +39,7 @@ describe('Test render full page', () => {
       expect(pageIndex).toBe('2');
     });
   });
-  test('Clicking on a card triggers a navigate to Detailed Card', async () => {
+  test('Clicking on a card navigates to Detailed Card and shows appropriate info, close button works correct', async () => {
     const mockedUsedNavigate = jest.fn();
     jest.mock('react-router-dom', () => ({
       ...jest.requireActual('react-router-dom'),
@@ -57,20 +57,31 @@ describe('Test render full page', () => {
     );
 
     const { findAllByTestId } = render(
-      <AppContext.Provider value={initialContextState}>
+      <Provider store={Store}>
         <RouterProvider router={router} />
-      </AppContext.Provider>
+      </Provider>
     );
 
     const cards = await findAllByTestId('ship-button');
     const firstCard = cards[0];
+    const firstItem = mockData[0];
+
     expect(firstCard).not.toBeNull();
     fireEvent.click(firstCard);
-
-    const searchParams = new URLSearchParams(window.location.search);
-    searchParams.set('details', '1');
-
     const details = await screen.findAllByTestId('detailed-card');
     expect(details).not.toBeNull();
+
+    const starshipClass = `Class: ${firstItem.starship_class}`;
+    expect(screen.getByText(starshipClass)).not.toBeNull();
+    expect(screen.getByText(`Length: ${firstItem.length}`)).not.toBeNull();
+    expect(
+      screen.getByText(`Cost in galactic credits: ${firstItem.cost_in_credits}`)
+    ).not.toBeNull();
+
+    const button = await screen.findByTestId('detailed-close');
+    await userEvent.click(button);
+    expect(screen.queryByText(starshipClass)).toBeNull();
   });
+
+  afterAll(() => server.close());
 });

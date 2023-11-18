@@ -30,7 +30,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
   },
   plugins: ['@typescript-eslint', 'react', 'prettier'],
-  ignorePatterns: ['vite.config.js'],
+  ignorePatterns: ['jest.polyfills.js'],
   rules: {
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',

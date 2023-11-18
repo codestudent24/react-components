@@ -44,6 +44,7 @@ function DetailedItem() {
           <p>Cargo capacity: {item.cargo_capacity}</p>
           <button
             type="button"
+            data-testid="detailed-close"
             className="button-close"
             onClick={() => {
               const pageParam = search.get('page');

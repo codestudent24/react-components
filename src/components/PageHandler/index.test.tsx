@@ -1,53 +1,34 @@
 import { BrowserRouter } from 'react-router-dom';
 import { fireEvent, render } from '@testing-library/react';
-import fetchMock from 'jest-fetch-mock';
-// import userEvent from '@testing-library/user-event';
-import { AppContext, AppContextType } from '../../context';
-import { IStarshipResponse } from '../../types/starship';
-import { mockData } from '../../utils/mockData';
+import { Provider } from 'react-redux';
+import Store from '../../redux/store';
+import server from '../../tests/server';
 import PageHandler from '.';
 
-const initialContextState: AppContextType = {
-  input: '',
-  setInput: () => {},
-  count: 20,
-  setCount: () => {},
-  itemsPerPage: 10,
-  setItemsPerPage: () => {},
-  data: mockData,
-  setData: () => {},
-};
-
-const myMockResponse: IStarshipResponse = {
-  count: 10,
-  previous: null,
-  next: null,
-  results: mockData,
-};
-
-fetchMock.enableMocks();
-fetchMock.mockResponse(JSON.stringify(myMockResponse));
-
 describe('Test pagination', () => {
-  test('Display pagination', async () => {
-    const location = {
-      ...window.location,
-      search: '?page=1',
-    };
+  beforeAll(() => server.listen());
+  afterEach(() => server.resetHandlers());
 
-    Object.defineProperty(window, 'location', {
-      value: location,
-    });
-
+  test('Pagination changes current page', async () => {
     const { findByText } = render(
       <BrowserRouter>
-        <AppContext.Provider value={initialContextState}>
-          <PageHandler loading={false} setLoading={() => {}} />
-        </AppContext.Provider>
+        <Provider store={Store}>
+          <PageHandler />
+        </Provider>
       </BrowserRouter>
     );
+    let searchParams = new URLSearchParams(window.location.search);
+    let pageIndex = searchParams.get('page');
+    expect(pageIndex).toBe('1');
+
     const nextButton = await findByText('>');
-    fireEvent.click(nextButton);
     expect(nextButton).not.toBeNull();
+    fireEvent.click(nextButton);
+
+    searchParams = new URLSearchParams(window.location.search);
+    pageIndex = searchParams.get('page');
+    expect(pageIndex).toBe('2');
   });
+
+  afterAll(() => server.close());
 });

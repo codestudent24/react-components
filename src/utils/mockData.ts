@@ -1,4 +1,3 @@
-import { AppContextType } from '../context';
 import { IStarship, IStarshipResponse } from '../types/starship';
 
 export const mockData: IStarship[] = [
@@ -19,7 +18,7 @@ export const mockData: IStarship[] = [
     films: 'https://swapi.dev/api/films/1/',
     created: '2014-12-10T14:20:33.369000Z',
     edited: '2014-12-20T21:23:49.867000Z',
-    url: 'https://swapi.dev/api/starships/2/',
+    url: 'https://swapi.dev/api/starships/0/',
   },
   {
     name: 'ship name 2',
@@ -38,7 +37,7 @@ export const mockData: IStarship[] = [
     films: 'https://swapi.dev/api/films/1/',
     created: '2014-12-10T14:20:33.369000Z',
     edited: '2014-12-20T21:23:49.867000Z',
-    url: 'https://swapi.dev/api/starships/2/',
+    url: 'https://swapi.dev/api/starships/1/',
   },
   {
     name: 'ship name 3',
@@ -76,7 +75,7 @@ export const mockData: IStarship[] = [
     films: 'https://swapi.dev/api/films/1/',
     created: '2014-12-10T14:20:33.369000Z',
     edited: '2014-12-20T21:23:49.867000Z',
-    url: 'https://swapi.dev/api/starships/2/',
+    url: 'https://swapi.dev/api/starships/3/',
   },
   {
     name: 'ship name 5',
@@ -95,7 +94,7 @@ export const mockData: IStarship[] = [
     films: 'https://swapi.dev/api/films/1/',
     created: '2014-12-10T14:20:33.369000Z',
     edited: '2014-12-20T21:23:49.867000Z',
-    url: 'https://swapi.dev/api/starships/2/',
+    url: 'https://swapi.dev/api/starships/4/',
   },
   {
     name: 'ship name 6',
@@ -114,7 +113,7 @@ export const mockData: IStarship[] = [
     films: 'https://swapi.dev/api/films/1/',
     created: '2014-12-10T14:20:33.369000Z',
     edited: '2014-12-20T21:23:49.867000Z',
-    url: 'https://swapi.dev/api/starships/2/',
+    url: 'https://swapi.dev/api/starships/5/',
   },
   {
     name: 'ship name 7',
@@ -133,7 +132,7 @@ export const mockData: IStarship[] = [
     films: 'https://swapi.dev/api/films/1/',
     created: '2014-12-10T14:20:33.369000Z',
     edited: '2014-12-20T21:23:49.867000Z',
-    url: 'https://swapi.dev/api/starships/2/',
+    url: 'https://swapi.dev/api/starships/6/',
   },
   {
     name: 'ship name 8',
@@ -152,7 +151,7 @@ export const mockData: IStarship[] = [
     films: 'https://swapi.dev/api/films/1/',
     created: '2014-12-10T14:20:33.369000Z',
     edited: '2014-12-20T21:23:49.867000Z',
-    url: 'https://swapi.dev/api/starships/2/',
+    url: 'https://swapi.dev/api/starships/7/',
   },
   {
     name: 'ship name 9',
@@ -171,7 +170,7 @@ export const mockData: IStarship[] = [
     films: 'https://swapi.dev/api/films/1/',
     created: '2014-12-10T14:20:33.369000Z',
     edited: '2014-12-20T21:23:49.867000Z',
-    url: 'https://swapi.dev/api/starships/2/',
+    url: 'https://swapi.dev/api/starships/8/',
   },
   {
     name: 'ship name 10',
@@ -190,20 +189,9 @@ export const mockData: IStarship[] = [
     films: 'https://swapi.dev/api/films/1/',
     created: '2014-12-10T14:20:33.369000Z',
     edited: '2014-12-20T21:23:49.867000Z',
-    url: 'https://swapi.dev/api/starships/2/',
+    url: 'https://swapi.dev/api/starships/9/',
   },
 ];
-
-export const initialContextState: AppContextType = {
-  input: '',
-  setInput: () => {},
-  count: 10,
-  setCount: () => {},
-  itemsPerPage: 10,
-  setItemsPerPage: () => {},
-  data: mockData,
-  setData: () => {},
-};
 
 export const myMockResponse: IStarshipResponse = {
   count: 10,
