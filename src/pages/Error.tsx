@@ -1,22 +1,25 @@
-import { PureComponent } from 'react';
-import { ErrorProps } from './interfaces';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ErrorContext } from '../context';
 
-class Error extends PureComponent<ErrorProps> {
-  undoError = () => {
-    const { onErrorChange } = this.props;
-    onErrorChange(false);
-  };
+function Error() {
+  const navigate = useNavigate();
+  const { setIsError } = useContext(ErrorContext);
 
-  render() {
-    return (
-      <>
-        <h1>Oops... we have an error!</h1>
-        <button type="button" onClick={this.undoError}>
-          undo error
-        </button>
-      </>
-    );
-  }
+  return (
+    <>
+      <h1>Oops... we have an error!</h1>
+      <button
+        type="button"
+        onClick={() => {
+          setIsError(false);
+          navigate('/?page=1');
+        }}
+      >
+        undo error
+      </button>
+    </>
+  );
 }
 
 export default Error;

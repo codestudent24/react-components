@@ -1,6 +1,6 @@
-import { Component, ReactNode } from 'react';
-import Home from './pages/Home';
+import { Component, ReactNode, ErrorInfo } from 'react';
 import Errors from './pages/Error';
+import { ErrorContext, ErrorContextType } from './context';
 
 interface Props {
   children?: ReactNode;
@@ -11,35 +11,31 @@ interface State {
 }
 
 class ErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  public static getDerivedStateFromError(): State {
-    return { hasError: true };
-  }
-
-  public componentDidCatch() {
-    this.setState({ hasError: true });
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    // eslint-disable-next-line no-console
+    console.warn('Caught Error', error, errorInfo);
+    const { setIsError } = this.context as ErrorContextType;
+    setIsError(true);
   }
 
   handleErrorState(newValue: boolean) {
-    // eslint-disable-next-line no-console
-    if (newValue) console.error('Error caught by Error Boundary');
-    this.setState({ hasError: newValue });
+    this.context = newValue;
   }
 
   render() {
-    const { hasError } = this.state;
     this.handleErrorState = this.handleErrorState.bind(this);
+    const { isError } = this.context as ErrorContextType;
+    const { children } = this.props;
+
     return (
       <>
-        {hasError === true && <Errors onErrorChange={this.handleErrorState} />}
-        {hasError === false && <Home onErrorChange={this.handleErrorState} />}
+        {isError && <Errors />}
+        {!isError && children}
       </>
     );
   }
 }
+
+ErrorBoundary.contextType = ErrorContext;
 
 export default ErrorBoundary;
