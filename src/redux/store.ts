@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { createWrapper } from 'next-redux-wrapper';
 import searchReducer from './dataSlice';
 import pageReducer from './pageSlice';
 import api from './query';
@@ -14,6 +15,4 @@ export const store = configureStore({
 });
 
 export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
-
-export default store;
+export type AppDispatch = typeof store.dispatch

@@ -1,24 +1,26 @@
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { IStarship } from '../../types/starship';
-import './Ship.css';
+import styles from './Ship.module.css';
 
 type ShipProps = {
   item: IStarship;
 };
 
 function Ship({ item }: ShipProps) {
-  const [search] = useSearchParams();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   function showDetails(url: string) {
     // url: "[0]https:/[1] /[2] swapi.dev/[3] api/[4] starships/[5] 9/[6] "
     const detailsIndex = url.split('/')[5];
-    const page = search.get('page');
-    navigate(`detailed/?page=${page}&details=${detailsIndex}`);
+    console.log(router.query)
+    const page = router.query.pageNumber;
+    if (page) {
+      router.push(`${page}/detailed/${detailsIndex}`);
+    }
   }
 
   return (
-    <li>
+    <li className={styles.ship}>
       <button
         type="button"
         data-testid="ship-button"

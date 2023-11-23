@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setCount, setData, setDataLoading } from '../../redux/dataSlice';
 import { setCurrentPage, setHasNext, setHasPrev } from '../../redux/pageSlice';
@@ -11,10 +11,10 @@ import {
   hasNextPage,
   hasPreviousPage,
 } from './pageFunctions';
-import './PageHandler.css';
+import styles from './PageHandler.module.css';
 
 export default function PageHandler() {
-  const [search, setSearch] = useSearchParams();
+  const router = useRouter();
   const { currentPage, hasNext, hasPrev } = useAppSelector(
     (state) => state.page
   );
@@ -26,12 +26,10 @@ export default function PageHandler() {
     createParam(currentPage, itemsPerPage, input)
   );
 
-  function updatePage(myPage: number) {
-    setSearch({ page: `${myPage}` });
-    dispatch(setCurrentPage(myPage));
-    dispatch(setHasPrev(hasPreviousPage(myPage)));
-    dispatch(setHasNext(hasNextPage(count, myPage, itemsPerPage)));
-  }
+  useEffect(() => {
+    dispatch(setHasPrev(hasPreviousPage(currentPage)));
+    dispatch(setHasNext(hasNextPage(count, currentPage, itemsPerPage)));
+  }, [count, itemsPerPage, currentPage])
 
   useEffect(() => {
     if (isFetching) {
@@ -45,37 +43,33 @@ export default function PageHandler() {
     }
   }, [dispatch, data, isFetching]);
 
-  useEffect(() => {
-    let pageParam = search.get('page');
-    if (pageParam === null) {
-      pageParam = '1';
-      setSearch({ page: pageParam });
-    }
-  }, [search, setSearch]);
-
   return (
     <>
       {dataLoading && null}
       {!dataLoading && (
-        <div className="page-buttons">
+        <div className={styles.pageButtons}>
           {hasPrev && (
             <button
               type="button"
-              className="button-page"
+              className={styles.buttonPage}
               onClick={() => {
-                handleDecrement(currentPage, updatePage);
+                const prev = currentPage - 1;
+                router.push(`${prev}`);
+                dispatch(setCurrentPage(prev))
               }}
             >
               &lt;
             </button>
           )}
-          <div className="current-page">Page {currentPage}</div>
+          <div className={styles.currentPage}>Page {currentPage}</div>
           {hasNext && (
             <button
               type="button"
-              className="button-page"
+              className={styles.buttonPage}
               onClick={() => {
-                handleIncrement(currentPage, updatePage);
+                const next = currentPage + 1;
+                router.push(`${next}`);
+                dispatch(setCurrentPage(next))
               }}
             >
               &gt;

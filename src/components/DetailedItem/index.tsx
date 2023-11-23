@@ -1,23 +1,17 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setItem, setItemLoading } from '../../redux/dataSlice';
 import { useStarshipDetailQuery } from '../../redux/query';
 import LoaderSpin from '../LoaderSpin';
-import './DetailedItem.css';
+import styles from './DetailedItem.module.css';
 
 function DetailedItem() {
-  const [detailsIndex, setDetailsIndex] = useState('2');
-  const { data, isFetching } = useStarshipDetailQuery(detailsIndex);
+  const router = useRouter();
+  const detailedIndex = router.query.detailedIndex as string || '2' ;
+  const { data, isFetching } = useStarshipDetailQuery(detailedIndex || '2');
   const { item, itemLoading } = useAppSelector((state) => state.search);
-  const [search] = useSearchParams();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const detailsParam = search.get('details');
-    if (detailsParam) setDetailsIndex(detailsParam);
-  }, [dispatch, search]);
 
   useEffect(() => {
     if (isFetching) {
@@ -34,7 +28,7 @@ function DetailedItem() {
     <>
       {itemLoading && <LoaderSpin />}
       {!itemLoading && item !== null && (
-        <div className="details" data-testid="detailed-card">
+        <div className={styles.details} data-testid="detailed-card">
           <h2>Starship {item.name}</h2>
           <p>Model: {item.model}</p>
           <p>Class: {item.starship_class}</p>
@@ -45,10 +39,10 @@ function DetailedItem() {
           <button
             type="button"
             data-testid="detailed-close"
-            className="button-close"
+            className={styles.buttonClose}
             onClick={() => {
-              const pageParam = search.get('page');
-              if (pageParam) navigate(`/?page=${pageParam}`);
+              const page = router.query.pageNumber;
+              if (page) router.push(`/page/${page}`)
             }}
           >
             X

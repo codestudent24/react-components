@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { IStarship } from '../../types/starship';
-import { useAppSelector } from '../../redux/hooks';
+import { IStarship } from '@/types/starship';
+import { useAppSelector } from '@/redux/hooks';
 import reduceData from './reduceFunction';
 import LoaderSpin from '../LoaderSpin';
 import Ship from '../Ship';
-import './SearchResults.css';
+import styles from './SearchResults.module.css';
 
 function SearchResults() {
   const { itemsPerPage, data, dataLoading } = useAppSelector(
@@ -23,7 +23,7 @@ function SearchResults() {
   if (dataLoading) return <LoaderSpin />;
 
   return (
-    <div className="data-container">
+    <div className={styles.container}>
       {reducedData.length === 0 && <h3>We have no more ships for you!</h3>}
       {reducedData.length && (
         <ul>

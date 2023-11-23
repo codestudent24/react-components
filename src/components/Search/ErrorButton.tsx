@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { ErrorContext } from '../../context';
+import { ErrorContext } from '../ErrorBoundary/context';
 
 function ErrorButton() {
   const { setIsError } = useContext(ErrorContext);
