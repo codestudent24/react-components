@@ -22,9 +22,9 @@ const Layout: FC<PropsWithChildren<unknown>> = ({ children }) => {
       <ErrorBoundary>
         <Search />
         <CardNumber />
-        <div className={styles.resultsContainer}>
+        <section className={styles.resultsContainer}>
           {children}
-        </div>
+        </section>
         <PageHandler />
       </ErrorBoundary>
     </ErrorContext.Provider>

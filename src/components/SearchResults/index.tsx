@@ -1,44 +1,45 @@
-import { useState, useEffect } from 'react';
-import { IStarship } from '@/types/starship';
-import { useAppSelector } from '@/redux/hooks';
-import reduceData from './reduceFunction';
-import LoaderSpin from '../LoaderSpin';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { setCount } from '@/redux/dataSlice';
 import Ship from '../Ship';
 import styles from './SearchResults.module.css';
+import { IStarshipResponse } from '@/types/starship';
 
-function SearchResults() {
-  const { itemsPerPage, data, dataLoading } = useAppSelector(
-    (state) => state.search
-  );
-  const currentPage = useAppSelector((state) => state.page.currentPage);
-  const [reducedData, setReducedData] = useState([] as IStarship[]);
+type Props = {
+  propsData: IStarshipResponse
+}
+
+function SearchResults({ propsData }: Props) {
+  const { itemsPerPage } = useAppSelector((state) => state.search);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (data) {
-      const reduced = reduceData(data, itemsPerPage, currentPage);
-      setReducedData(reduced);
+    if (propsData.count) {
+      dispatch(setCount(propsData.count))
     }
-  }, [data, itemsPerPage, currentPage, setReducedData]);
-
-  if (dataLoading) return <LoaderSpin />;
+  }, [dispatch, propsData]);
 
   return (
-    <div className={styles.container}>
-      {reducedData.length === 0 && <h3>We have no more ships for you!</h3>}
-      {reducedData.length && (
-        <ul>
-          {reducedData.map((elem, index) => {
-            if (index < itemsPerPage) {
-              if (elem) {
-                return <Ship item={elem} key={elem.url} />;
-              }
-            }
-            return null;
-          })}
-        </ul>
-      )}
-    </div>
-  );
+    <article className={styles.container} suppressHydrationWarning={true}>
+      {propsData.results ? (
+        <>
+          {propsData.results.length === 0 && <h3>We have no more ships for you!</h3>}
+          {propsData.results.length && (
+            <ul>
+              {propsData.results.map((elem, index) => {
+                if (index < itemsPerPage) {
+                  if (elem) {
+                    return <Ship item={elem} key={elem.url} />;
+                  }
+                }
+                return null;
+              })}
+            </ul>
+          )}
+        </>
+      ) : null}
+    </article>
+  )
 }
 
 export default SearchResults;

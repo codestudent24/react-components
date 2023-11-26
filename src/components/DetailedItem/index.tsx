@@ -1,34 +1,20 @@
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { setItem, setItemLoading } from '../../redux/dataSlice';
-import { useStarshipDetailQuery } from '../../redux/query';
-import LoaderSpin from '../LoaderSpin';
+import { IStarship } from '@/types/starship';
 import styles from './DetailedItem.module.css';
 
-function DetailedItem() {
-  const router = useRouter();
-  const detailedIndex = router.query.detailedIndex as string || '2' ;
-  const { data, isFetching } = useStarshipDetailQuery(detailedIndex || '2');
-  const { item, itemLoading } = useAppSelector((state) => state.search);
-  const dispatch = useAppDispatch();
+type Props = {
+  item: IStarship | null
+}
 
-  useEffect(() => {
-    if (isFetching) {
-      dispatch(setItemLoading(true));
-    } else {
-      dispatch(setItemLoading(false));
-      if (data) {
-        dispatch(setItem(data));
-      }
-    }
-  }, [dispatch, data, isFetching]);
+function DetailedItem({ item }: Props) {
+  const router = useRouter();
 
   return (
-    <>
-      {itemLoading && <LoaderSpin />}
-      {!itemLoading && item !== null && (
-        <div className={styles.details} data-testid="detailed-card">
+    <article className={styles.details} data-testid="detailed-card">
+      {item === null ? (
+        null
+      ) : (
+        <>
           <h2>Starship {item.name}</h2>
           <p>Model: {item.model}</p>
           <p>Class: {item.starship_class}</p>
@@ -47,10 +33,9 @@ function DetailedItem() {
           >
             X
           </button>
-        </div>
+        </>
       )}
-      {item === null && null}
-    </>
+    </article>
   );
 }
 

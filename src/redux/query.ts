@@ -1,6 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { HYDRATE } from 'next-redux-wrapper';
 import { IStarship, IStarshipResponse } from '../types/starship';
+import { getResults } from '@/utils/api';
+
+type SearchQuery = {
+  input: string,
+  itemsPerPage: number,
+  pageNumber: string
+}
 
 const api = createApi({
   reducerPath: 'swapi',
@@ -11,10 +18,11 @@ const api = createApi({
     }
   },
   endpoints: (build) => ({
-    starshipList: build.query<IStarshipResponse, string>({
-      query(urlParams: string) {
-        return `${urlParams}`;
-      },
+    starshipList: build.query<IStarshipResponse, SearchQuery>({
+      queryFn: async (urlParams: SearchQuery) => {
+        const { input, itemsPerPage, pageNumber } = urlParams;
+        return await getResults(input, itemsPerPage, pageNumber);
+      }
     }),
     starshipDetail: build.query<IStarship, string>({
       query(index: number | string) {
@@ -24,7 +32,11 @@ const api = createApi({
   }),
 });
 
-export const { useStarshipListQuery, useStarshipDetailQuery } = api;
+export const {
+  useStarshipListQuery,
+  useStarshipDetailQuery,
+  util: { getRunningQueriesThunk },
+} = api;
 export const { starshipList, starshipDetail } = api.endpoints;
 
 export default api;

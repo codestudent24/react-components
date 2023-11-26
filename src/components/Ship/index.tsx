@@ -14,8 +14,8 @@ function Ship({ item }: ShipProps) {
     const detailsIndex = url.split('/')[5];
     console.log(router.query)
     const page = router.query.pageNumber;
-    if (page) {
-      router.push(`${page}/detailed/${detailsIndex}`);
+    if (typeof page === "string") {
+      router.push(`/page/${page}/detailed/${detailsIndex}`);
     }
   }
 

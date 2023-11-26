@@ -5,23 +5,19 @@ import type { RootState } from './store';
 import { IStarship } from '../types/starship';
 
 interface DataSlice {
-  data: IStarship[];
+  listData: IStarship[];
   count: number;
   itemsPerPage: number;
   item: IStarship | null;
   input: string;
-  dataLoading: boolean;
-  itemLoading: boolean;
 }
 
 const initialState: DataSlice = {
-  data: [],
+  listData: [],
   count: 0,
   itemsPerPage: 10,
   item: null,
   input: '',
-  dataLoading: true,
-  itemLoading: false,
 };
 
 export const searchSlice = createSlice({
@@ -29,7 +25,7 @@ export const searchSlice = createSlice({
   initialState,
   reducers: {
     setData: (state, action: PayloadAction<IStarship[]>) => {
-      state.data = action.payload;
+      state.listData = action.payload;
     },
     setCount: (state, action: PayloadAction<number>) => {
       state.count = action.payload;
@@ -44,12 +40,6 @@ export const searchSlice = createSlice({
     setInput: (state, action: PayloadAction<string>) => {
       state.input = action.payload;
     },
-    setDataLoading: (state, action: PayloadAction<boolean>) => {
-      state.dataLoading = action.payload;
-    },
-    setItemLoading: (state, action: PayloadAction<boolean>) => {
-      state.itemLoading = action.payload;
-    },
   },
 });
 
@@ -59,14 +49,10 @@ export const {
   setItemsPerPage,
   setItem,
   setInput,
-  setDataLoading,
-  setItemLoading,
 } = searchSlice.actions;
 
-export const selectData = (state: RootState) => state.search.data;
+export const selectData = (state: RootState) => state.search.listData;
 export const SelectItem = (state: RootState) => state.search.item;
 export const selectInput = (state: RootState) => state.search.input;
-export const selectDataLoading = (state: RootState) => state.search.dataLoading;
-export const selectItemLoading = (state: RootState) => state.search.itemLoading;
 
 export default searchSlice.reducer;
