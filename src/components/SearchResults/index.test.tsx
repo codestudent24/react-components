@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import server from '@/tests/server';
 import Home from '@/pages/index';
-import { store } from '../../redux/store';
+import { store } from '@/redux/store';
 
 describe('Test render of search results', () => {
   beforeAll(() => server.listen());

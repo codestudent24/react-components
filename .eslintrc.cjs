@@ -18,6 +18,8 @@ module.exports = {
   plugins: ['@typescript-eslint', 'react', 'prettier'],
   ignorePatterns: [
     'jest.polyfills.js',
+    'jest.config.js',
+    'jest.setup.js',
     'babel.config.js',
     'src/assets/styleMock.js',
     'src/assets/fileMock.js',
