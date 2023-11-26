@@ -1,10 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import server from '../../tests/server';
-import Store from '../../redux/store';
-import Home from '../../pages/Home';
+import server from '@/tests/server';
+import Home from '@/pages/index';
+import { store } from '../../redux/store';
 
 describe('Test render of search results', () => {
   beforeAll(() => server.listen());
@@ -12,11 +11,9 @@ describe('Test render of search results', () => {
 
   test('SearchResults displays correct amount of items', async () => {
     render(
-      <MemoryRouter>
-        <Provider store={Store}>
-          <Home />
-        </Provider>
-      </MemoryRouter>
+      <Provider store={store}>
+        <Home />
+      </Provider>
     );
     await waitFor(() => {
       let itemList = screen.getAllByRole('listitem');

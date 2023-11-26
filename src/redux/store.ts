@@ -3,7 +3,6 @@ import { createWrapper } from 'next-redux-wrapper';
 import searchReducer from './dataSlice';
 import pageReducer from './pageSlice';
 import api from './query';
-import { dataMiddlware } from './middleware';
 
 const rootReducer = combineReducers({
   search: searchReducer,
@@ -19,7 +18,7 @@ export const store = configureStore({
 
 const makeStore = () => store;
 
-export type AppStore = ReturnType<typeof makeStore>
+export type AppStore = ReturnType<typeof makeStore>;
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;
 

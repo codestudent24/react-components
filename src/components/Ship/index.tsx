@@ -12,9 +12,8 @@ function Ship({ item }: ShipProps) {
   function showDetails(url: string) {
     // url: "[0]https:/[1] /[2] swapi.dev/[3] api/[4] starships/[5] 9/[6] "
     const detailsIndex = url.split('/')[5];
-    console.log(router.query)
     const page = router.query.pageNumber;
-    if (typeof page === "string") {
+    if (typeof page === 'string') {
       router.push(`/page/${page}/detailed/${detailsIndex}`);
     }
   }

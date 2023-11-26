@@ -43,13 +43,8 @@ export const searchSlice = createSlice({
   },
 });
 
-export const {
-  setData,
-  setCount,
-  setItemsPerPage,
-  setItem,
-  setInput,
-} = searchSlice.actions;
+export const { setData, setCount, setItemsPerPage, setItem, setInput } =
+  searchSlice.actions;
 
 export const selectData = (state: RootState) => state.search.listData;
 export const SelectItem = (state: RootState) => state.search.item;

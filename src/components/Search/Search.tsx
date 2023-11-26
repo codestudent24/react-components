@@ -1,9 +1,9 @@
 import { useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setInput } from '../../redux/dataSlice';
 import { setCurrentPage } from '../../redux/pageSlice';
 import ErrorButton from './ErrorButton';
-import { useRouter } from 'next/navigation';
 import styles from './Search.module.css';
 
 function Search() {
@@ -25,7 +25,7 @@ function Search() {
             const { value } = inputElement;
             dispatch(setInput(value));
             dispatch(setCurrentPage(1));
-            router.push('/page/1')
+            router.push('/page/1');
           }
         }}
       >

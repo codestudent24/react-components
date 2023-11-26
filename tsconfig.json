@@ -19,9 +19,12 @@
   },
   "include": [
     "next-env.d.ts",
-    ".eslintrc.json",
+    ".eslintrc.cjs",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "babel.config.js",
+    "jest.config.ts",
+    "jest.polyfills.js"
   ],
   "exclude": ["node_modules"]
 }

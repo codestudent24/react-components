@@ -1,4 +1,4 @@
-import { mockData } from '../../utils/mockData';
+import { mockData } from '@/utils/mockData';
 import reduceData from './reduceFunction';
 
 describe('reduceData', () => {

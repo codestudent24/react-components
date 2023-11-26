@@ -3,17 +3,15 @@ import { IStarship } from '@/types/starship';
 import styles from './DetailedItem.module.css';
 
 type Props = {
-  item: IStarship | null
-}
+  item: IStarship | null;
+};
 
 function DetailedItem({ item }: Props) {
   const router = useRouter();
 
   return (
     <article className={styles.details} data-testid="detailed-card">
-      {item === null ? (
-        null
-      ) : (
+      {item === null ? null : (
         <>
           <h2>Starship {item.name}</h2>
           <p>Model: {item.model}</p>
@@ -28,7 +26,7 @@ function DetailedItem({ item }: Props) {
             className={styles.buttonClose}
             onClick={() => {
               const page = router.query.pageNumber;
-              if (page) router.push(`/page/${page}`)
+              if (page) router.push(`/page/${page}`);
             }}
           >
             X

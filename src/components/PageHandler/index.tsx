@@ -10,47 +10,43 @@ export default function PageHandler() {
   const { currentPage, hasNext, hasPrev } = useAppSelector(
     (state) => state.page
   );
-  const { count, itemsPerPage } = useAppSelector(
-    (state) => state.search
-  );
+  const { count, itemsPerPage } = useAppSelector((state) => state.search);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(setHasPrev(hasPreviousPage(currentPage)));
     dispatch(setHasNext(hasNextPage(count, currentPage, itemsPerPage)));
-  }, [count, itemsPerPage, currentPage])
+  }, [dispatch, count, itemsPerPage, currentPage]);
 
   return (
-    <>
-      <div className={styles.pageButtons}>
-        {hasPrev && (
-          <button
-            type="button"
-            className={styles.buttonPage}
-            onClick={() => {
-              const prev = currentPage - 1;
-              router.push(`/page/${prev}`);
-              dispatch(setCurrentPage(prev))
-            }}
-          >
-            &lt;
-          </button>
-        )}
-        <div className={styles.currentPage}>Page {currentPage}</div>
-        {hasNext && (
-          <button
-            type="button"
-            className={styles.buttonPage}
-            onClick={() => {
-              const next = currentPage + 1;
-              router.push(`/page/${next}`);
-              dispatch(setCurrentPage(next))
-            }}
-          >
-            &gt;
-          </button>
-        )}
-      </div>
-    </>
+    <div className={styles.pageButtons}>
+      {hasPrev && (
+        <button
+          type="button"
+          className={styles.buttonPage}
+          onClick={() => {
+            const prev = currentPage - 1;
+            router.push(`/page/${prev}`);
+            dispatch(setCurrentPage(prev));
+          }}
+        >
+          &lt;
+        </button>
+      )}
+      <div className={styles.currentPage}>Page {currentPage}</div>
+      {hasNext && (
+        <button
+          type="button"
+          className={styles.buttonPage}
+          onClick={() => {
+            const next = currentPage + 1;
+            router.push(`/page/${next}`);
+            dispatch(setCurrentPage(next));
+          }}
+        >
+          &gt;
+        </button>
+      )}
+    </div>
   );
 }

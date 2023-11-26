@@ -1,5 +1,4 @@
 import { IStarship, IStarshipResponse } from '../types/starship';
-import { getRealPage } from './functions';
 
 const baseURL = 'https://swapi.dev/api/starships/';
 
@@ -19,30 +18,35 @@ export const getStarshipByIndex = async (index: string) => {
   return data;
 };
 
+export function getRealPage(currentPage: number, itemsPerPage: number) {
+  return itemsPerPage === 10 ? currentPage : Math.ceil(currentPage / 2);
+}
+
 export const getResults = async (
   input: string,
   itemsPerPage: number,
   pageNumber: string
 ) => {
   const currentPage = Number(pageNumber);
-  const page = getRealPage(Number(currentPage), itemsPerPage)
-  const query = input === '' ? `?page=${page}` : `?search=${input}&page=${page}`;
+  const page = getRealPage(Number(currentPage), itemsPerPage);
+  const query =
+    input === '' ? `?page=${page}` : `?search=${input}&page=${page}`;
   const response = await fetch(`${baseURL}${query}`);
-  const result = (await response.json()) as IStarshipResponse
+  const result = (await response.json()) as IStarshipResponse;
   if (itemsPerPage < 10) {
     const reducedResult: IStarship[] = [];
     if (currentPage % 2) {
-      for (let i = 0; i < 5; i++) {
-        reducedResult.push(result.results[i])
+      for (let i = 0; i < 5; i += 1) {
+        reducedResult.push(result.results[i]);
       }
     } else {
-      for (let i = 5; i < 10; i++) {
-        reducedResult.push(result.results[i])
+      for (let i = 5; i < 10; i += 1) {
+        reducedResult.push(result.results[i]);
       }
     }
     result.results = reducedResult;
   }
   return { data: result };
-}
+};
 
 export default getStarships;

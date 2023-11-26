@@ -3,6 +3,7 @@ import { ErrorContext, ErrorContextType } from './context';
 import Error from './Error';
 
 interface Props {
+  // eslint-disable-next-line react/require-default-props
   children?: ReactNode;
 }
 

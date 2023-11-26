@@ -1,9 +1,8 @@
-import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { fireEvent, render, waitFor } from '@testing-library/react';
-import server from '../../tests/server';
-import Store from '../../redux/store';
-import Home from '../../pages/Home';
+import Home from '@/pages/index';
+import server from '@/tests/server';
+import { store } from '@/redux/store';
 
 describe('Test Search', () => {
   beforeAll(() => server.listen());
@@ -11,11 +10,9 @@ describe('Test Search', () => {
 
   test('Click on search button changes current page to 1', async () => {
     const { getByTestId, getByRole } = render(
-      <BrowserRouter>
-        <Provider store={Store}>
-          <Home />
-        </Provider>
-      </BrowserRouter>
+      <Provider store={store}>
+        <Home />
+      </Provider>
     );
     await waitFor(() => {
       const input = getByRole('textbox');
