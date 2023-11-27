@@ -1,4 +1,8 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import {
+  combineReducers,
+  configureStore,
+  PreloadedState,
+} from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
 import searchReducer from './dataSlice';
 import pageReducer from './pageSlice';
@@ -17,6 +21,16 @@ export const store = configureStore({
 });
 
 const makeStore = () => store;
+
+export const setupStore = (preloadedState?: PreloadedState<RootState>) =>
+  configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: false,
+      }).concat(api.middleware),
+    preloadedState,
+  });
 
 export type AppStore = ReturnType<typeof makeStore>;
 export type RootState = ReturnType<typeof rootReducer>;
