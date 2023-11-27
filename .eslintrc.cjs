@@ -16,14 +16,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
   },
   plugins: ['@typescript-eslint', 'react', 'prettier'],
-  ignorePatterns: [
-    'jest.polyfills.js',
-    'jest.config.js',
-    'jest.setup.js',
-    'babel.config.js',
-    'src/assets/styleMock.js',
-    'src/assets/fileMock.js',
-  ],
+  ignorePatterns: ['*.js'],
   rules: {
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
