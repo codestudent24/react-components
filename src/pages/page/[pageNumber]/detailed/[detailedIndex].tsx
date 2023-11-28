@@ -17,12 +17,14 @@ export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (context) => {
     const pageNumber = context.params?.pageNumber;
     const detailedIndex = context.params?.detailedIndex;
+    let searchString = context.query.search;
+    if (typeof searchString !== 'string') searchString = '';
     let result = initialState;
     let item: IStarship | null = null;
     if (typeof pageNumber === 'string') {
-      const { input, itemsPerPage } = store.getState().search;
+      const { itemsPerPage } = store.getState().search;
       const page = getRealPage(Number(pageNumber), itemsPerPage);
-      result = await getStarships(input, page);
+      result = await getStarships(searchString, page);
     }
     if (typeof detailedIndex === 'string') {
       item = await getStarshipByIndex(detailedIndex);

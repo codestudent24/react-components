@@ -1,5 +1,5 @@
 import { mockData } from '@/utils/mockData';
-import reduceData from './reduceFunction';
+import reduceData from '../components/SearchResults/reduceFunction';
 
 describe('reduceData', () => {
   test('Validate 10 items', () => {

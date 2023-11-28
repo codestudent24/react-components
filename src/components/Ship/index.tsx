@@ -12,8 +12,13 @@ function Ship({ item }: ShipProps) {
   function showDetails(url: string) {
     // url: "[0]https:/[1] /[2] swapi.dev/[3] api/[4] starships/[5] 9/[6] "
     const detailsIndex = url.split('/')[5];
-    const page = router.query.pageNumber;
-    if (typeof page === 'string') {
+    const page = router.query.pageNumber as string;
+    const searchString = router.query.search;
+    if (typeof searchString === 'string' && searchString !== '') {
+      router.push(
+        `/page/${page}/detailed/${detailsIndex}?search=${searchString}`
+      );
+    } else {
       router.push(`/page/${page}/detailed/${detailsIndex}`);
     }
   }

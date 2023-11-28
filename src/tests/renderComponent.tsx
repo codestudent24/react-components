@@ -12,7 +12,7 @@ type RenderComponentProps = {
 
 const renderComponent = ({
   children,
-  path = '/page/1/',
+  path = '/page/1',
   preloadedState,
 }: RenderComponentProps) => {
   const store = setupStore(preloadedState);

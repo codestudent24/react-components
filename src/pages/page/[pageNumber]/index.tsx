@@ -15,11 +15,13 @@ const initialState: IStarshipResponse = {
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (context) => {
     const pageNumber = context.params?.pageNumber;
+    let searchString = context.query.search;
+    if (typeof searchString !== 'string') searchString = '';
     let result = initialState;
     if (typeof pageNumber === 'string') {
-      const { input, itemsPerPage } = store.getState().search;
+      const { itemsPerPage } = store.getState().search;
       const page = getRealPage(Number(pageNumber), itemsPerPage);
-      result = await getStarships(input, page);
+      result = await getStarships(searchString, page);
     }
     return { props: { propsData: result } };
   }

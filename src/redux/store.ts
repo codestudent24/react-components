@@ -5,12 +5,10 @@ import {
 } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
 import searchReducer from './dataSlice';
-import pageReducer from './pageSlice';
 import api from './query';
 
 const rootReducer = combineReducers({
   search: searchReducer,
-  page: pageReducer,
   [api.reducerPath]: api.reducer,
 });
 

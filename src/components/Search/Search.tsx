@@ -1,20 +1,15 @@
 import { useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { setInput } from '../../redux/dataSlice';
-import { setCurrentPage } from '../../redux/pageSlice';
+import { useRouter } from 'next/router';
 import ErrorButton from './ErrorButton';
 import styles from './Search.module.css';
 
 function Search() {
-  const input = useAppSelector((state) => state.search.input);
   const router = useRouter();
   const inputRef = useRef(null);
-  const dispatch = useAppDispatch();
 
   return (
     <div className={styles.search}>
-      <input type="text" defaultValue={input} ref={inputRef} />
+      <input type="text" defaultValue="" ref={inputRef} />
       <button
         type="button"
         className="button-search"
@@ -23,9 +18,7 @@ function Search() {
           const inputElement = inputRef.current as HTMLInputElement | null;
           if (inputElement) {
             const { value } = inputElement;
-            dispatch(setInput(value));
-            dispatch(setCurrentPage(1));
-            router.push('/page/1');
+            router.push(value === '' ? '/page/1' : `/page/1?search=${value}`);
           }
         }}
       >

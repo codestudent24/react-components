@@ -4,6 +4,14 @@ const nextConfig = {
   experimental: {
     forceSwcTransforms: true,
   },
+  async rewrites() {
+    return [
+      {
+        source: '/',
+        destination: '/page/1',
+      },
+    ]
+  },
 };
 
 module.exports = nextConfig;
