@@ -1,0 +1,18 @@
+.ship {
+  margin: 20px 0;
+  padding: 0;
+  min-width: 40%;
+  border: 1px solid black;
+  box-shadow: 4px 4px 5px #888888;
+  background-color: #444444;
+}
+
+.ship button {
+  width: 100%;
+  padding: 20px;
+  margin: 0;
+  background-color: transparent;
+  border: none;
+  color: #ffbb00;
+  cursor: pointer;
+}

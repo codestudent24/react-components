@@ -1,8 +1,4 @@
 module.exports = {
-  env: {
-    browser: true,
-    es2021: true,
-  },
   extends: [
     'airbnb',
     'airbnb-typescript',
@@ -10,17 +6,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
     'plugin:prettier/recommended',
-  ],
-  overrides: [
-    {
-      env: {
-        node: true,
-      },
-      files: ['.eslintrc.{js,cjs}'],
-      parserOptions: {
-        sourceType: 'script',
-      },
-    },
+    'next',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -30,7 +16,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
   },
   plugins: ['@typescript-eslint', 'react', 'prettier'],
-  ignorePatterns: ['vite.config.js'],
+  ignorePatterns: ['*.js'],
   rules: {
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
@@ -56,5 +42,6 @@ module.exports = {
         tsx: 'never',
       },
     ],
+    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
   },
 };

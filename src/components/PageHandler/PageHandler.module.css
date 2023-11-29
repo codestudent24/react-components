@@ -1,0 +1,29 @@
+.pageButtons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto;
+  width: fit-content;
+}
+
+.buttonPage {
+  margin: 0 20px;
+  background-color: #444444;
+  color: #ffbb00;
+  padding: 10px;
+  border-radius: 100%;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.2s ease-out;
+}
+
+.buttonPage:hover {
+  transform: scale(1.1);
+}
+
+.currentPage {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #444444;
+}
