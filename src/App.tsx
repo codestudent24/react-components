@@ -1,19 +1,26 @@
-import { PureComponent } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
-import NotFound from './pages/notFound';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Main from "./components/Main";
+import ErrorPage from "./pages/ErrorPage";
+import "./App.css";
 
-class App extends PureComponent {
-  render() {
-    return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    );
-  }
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Main />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "controlled",
+    element: <div>Controlled</div>,
+  },
+  {
+    path: "uncontrolled",
+    element: <div>Uncontrolled</div>,
+  },
+]);
+
+function App() {
+  return <RouterProvider router={router} />;
 }
 
 export default App;
