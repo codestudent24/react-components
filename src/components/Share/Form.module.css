@@ -1,0 +1,25 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.inputContainer {
+  display: block;
+  min-height: 60px;
+}
+
+.inputContainer p {
+  margin: 5px 0;
+  height: 24px;
+  color: coral;
+}
+
+.inputContainer label {
+  margin-right: 1rem;
+}
+
+.inputContainer label::after {
+  content: ':';
+}

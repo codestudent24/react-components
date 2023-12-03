@@ -1,5 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Main from "./components/Main";
+import ControlledForm from "./components/Controlled";
+import UncontrolledForm from "./components/Uncontrolled";
 import ErrorPage from "./pages/ErrorPage";
 import "./App.css";
 
@@ -11,11 +13,11 @@ const router = createBrowserRouter([
   },
   {
     path: "controlled",
-    element: <div>Controlled</div>,
+    element: <ControlledForm />,
   },
   {
     path: "uncontrolled",
-    element: <div>Uncontrolled</div>,
+    element: <UncontrolledForm />,
   },
 ]);
 
