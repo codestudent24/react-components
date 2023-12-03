@@ -12,97 +12,68 @@ import {
   imageWidthSchema,
 } from "../Validations/Validation";
 
-export async function validateString(
-  ref: React.RefObject<HTMLInputElement>,
+export async function isValidString(
+  value: string,
   schema: yup.StringSchema<string, yup.AnyObject, undefined, "">,
   setErrorState: React.Dispatch<React.SetStateAction<string>>,
-  dispatch: ThunkDispatch<
-    {
-      control: SliceDataType;
-      uncontrol: SliceDataType;
-    },
-    undefined,
-    AnyAction
-  > &
-    Dispatch<AnyAction>,
-  action: ActionCreatorWithPayload<string, string>,
 ) {
-  if (ref.current) {
-    try {
-      await schema.validate(ref.current.value);
-      dispatch(action(ref.current.value));
-    } catch (error) {
-      if (error instanceof yup.ValidationError) {
-        setErrorState(error.errors[0]);
-      }
+  try {
+    await schema.validate(value);
+    setErrorState("");
+    return true;
+  } catch (error) {
+    if (error instanceof yup.ValidationError) {
+      setErrorState(error.errors[0]);
     }
+    return false;
   }
 }
 
-export async function validateNumber(
-  ref: React.RefObject<HTMLInputElement>,
+export async function isValidNumber(
+  value: number,
   schema: yup.NumberSchema<number, yup.AnyObject, undefined, "">,
   setErrorState: React.Dispatch<React.SetStateAction<string>>,
-  dispatch: ThunkDispatch<
-    {
-      control: SliceDataType;
-      uncontrol: SliceDataType;
-    },
-    undefined,
-    AnyAction
-  > &
-    Dispatch<AnyAction>,
-  action: ActionCreatorWithPayload<number, string>,
 ) {
-  if (ref.current) {
-    try {
-      await schema.validate(Number(ref.current.value));
-      dispatch(action(Number(ref.current.value)));
-    } catch (error) {
-      if (error instanceof yup.ValidationError) {
-        setErrorState(error.errors[0]);
-      }
+  try {
+    await schema.validate(value);
+    setErrorState("");
+    return true;
+  } catch (error) {
+    if (error instanceof yup.ValidationError) {
+      setErrorState(error.errors[0]);
     }
+    return false;
   }
 }
 
-export async function validateBoolean(
-  ref: React.RefObject<HTMLInputElement>,
-  schema: yup.NumberSchema<number, yup.AnyObject, undefined, "">,
+export async function isValidBoolean(
+  value: boolean,
+  schema: yup.BooleanSchema<boolean | undefined, yup.AnyObject, undefined, "">,
   setErrorState: React.Dispatch<React.SetStateAction<string>>,
-  dispatch: ThunkDispatch<
-    {
-      control: SliceDataType;
-      uncontrol: SliceDataType;
-    },
-    undefined,
-    AnyAction
-  > &
-    Dispatch<AnyAction>,
-  action: ActionCreatorWithPayload<boolean, string>,
 ) {
-  if (ref.current) {
-    try {
-      await schema.validate(ref.current.checked);
-      dispatch(action(ref.current.checked));
-    } catch (error) {
-      if (error instanceof yup.ValidationError) {
-        setErrorState(error.errors[0]);
-      }
+  try {
+    await schema.validate(value);
+    return true;
+  } catch (error) {
+    if (error instanceof yup.ValidationError) {
+      setErrorState(error.errors[0]);
     }
+    setErrorState("");
+    return false;
   }
 }
 
 export function comparePasswords(
-  passwordRef: React.RefObject<HTMLInputElement>,
-  submitPasswordRef: React.RefObject<HTMLInputElement>,
+  password: string,
+  submitPassword: string,
   setErrorState: React.Dispatch<React.SetStateAction<string>>,
 ) {
-  if (passwordRef.current && submitPasswordRef.current) {
-    if (passwordRef.current.value !== submitPasswordRef.current.value) {
-      setErrorState("Passwords should be equal");
-    }
+  if (password !== submitPassword) {
+    setErrorState("Passwords should be equal");
+    return false;
   }
+  setErrorState("");
+  return true;
 }
 
 export const toBase64 = (file: Blob) =>
@@ -114,7 +85,7 @@ export const toBase64 = (file: Blob) =>
   });
 
 export async function validateImage(
-  ref: React.RefObject<HTMLInputElement>,
+  file: File | undefined,
   setErrorState: React.Dispatch<React.SetStateAction<string>>,
   dispatch: ThunkDispatch<
     {
@@ -127,32 +98,47 @@ export async function validateImage(
     Dispatch<AnyAction>,
   action: ActionCreatorWithPayload<string, string>,
 ) {
-  if (ref.current && ref.current.files) {
-    const file = ref.current.files[0];
-    if (!file) {
-      setErrorState("No file found");
-      return;
-    }
-    const size = file.size;
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      const img = new Image();
-      img.onload = async function () {
-        const width = img.naturalWidth;
-        const height = img.naturalHeight;
-        try {
-          await imageWidthSchema.validate(width);
-          await imageHeightSchema.validate(height);
-          await imageSizeSchema.validate(size);
-        } catch (error) {
-          if (error instanceof yup.ValidationError) {
-            setErrorState(error.errors[0]);
-          }
-        }
-      };
-      img.src = event.target?.result as string;
-    };
-    reader.readAsDataURL(file);
-    dispatch(action(reader.result as string));
+  if (!file) {
+    setErrorState("No file found");
+    return;
   }
+  const size = file.size;
+  const reader = new FileReader();
+  reader.onload = function (event) {
+    const img = new Image();
+    img.onload = async function () {
+      const width = img.naturalWidth;
+      const height = img.naturalHeight;
+      try {
+        await imageWidthSchema.validate(width);
+        await imageHeightSchema.validate(height);
+        await imageSizeSchema.validate(size);
+        setErrorState("");
+        const base64 = await convertToBase64(file);
+        if (typeof base64 === "string") dispatch(action(base64));
+      } catch (error) {
+        if (error instanceof yup.ValidationError) {
+          setErrorState(error.errors[0]);
+        }
+      }
+    };
+    img.src = event.target?.result as string;
+  };
+  reader.readAsDataURL(file);
 }
+
+export const convertToBase64 = (
+  file: Blob,
+): Promise<string | ArrayBuffer | null> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+
+    reader.onerror = (error: unknown) => {
+      reject(error);
+    };
+  });
+};
