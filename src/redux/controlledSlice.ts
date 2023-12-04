@@ -38,3 +38,13 @@ export const controlledSlice = createSlice({
     },
   },
 });
+
+export const {
+  setName,
+  setAge,
+  setMail,
+  setPassword,
+  setGender,
+  setImage,
+  setTerms,
+} = controlledSlice.actions;

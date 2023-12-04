@@ -13,3 +13,14 @@ export type SliceDataType = {
   image: string;
   terms: boolean;
 };
+
+export interface IFormValues {
+  name: string;
+  mail: string;
+  age: number;
+  password: string;
+  passwordSubmit: string;
+  country: string;
+  terms: boolean;
+  gender: string;
+}

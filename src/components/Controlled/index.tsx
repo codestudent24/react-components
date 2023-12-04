@@ -1,123 +1,135 @@
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { GenderEnum, SliceDataType } from "../../types/types";
+import { GenderEnum } from "../../types/types";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../redux/store";
 import styles from "../Share/Form.module.css";
+import { validateImage } from "../../utils/functions";
+import {
+  setAge,
+  setGender,
+  setImage,
+  setMail,
+  setName,
+  setPassword,
+} from "../../redux/controlledSlice";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { schema, FormData } from "../../Validations/shape";
+import { useAppSelector } from "../../redux/hooks";
 
 export default function ControlledForm() {
-  const { register } = useForm<SliceDataType>();
-  const [name, setName] = useState("");
-  const [age, setAge] = useState(0);
-  const [mail, setMail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordSubmit, setPasswordSubmit] = useState("");
-  const [gender, setGender] = useState<GenderEnum>(GenderEnum.female);
-  const [image, setImage] = useState("");
-  const [terms, setTerms] = useState(false);
+  const [imageError, setImageError] = useState("select image");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schema) });
+  const navigate = useNavigate();
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    console.log(
-      name,
-      age,
-      mail,
-      password,
-      passwordSubmit,
-      gender,
-      image,
-      terms,
-    );
-  }
+  const { countries } = useAppSelector((state) => state.countries);
+  const dispatch = useAppDispatch();
+
+  const onSubmit = (data: FormData) => {
+    console.log(JSON.stringify(data));
+    if (
+      !errors.name &&
+      !errors.age &&
+      !errors.mail &&
+      !errors.password &&
+      !errors.passwordSubmit &&
+      !errors.terms &&
+      !errors.country &&
+      imageError.length === 0
+    ) {
+      dispatch(setName(data.name));
+      dispatch(setMail(data.mail));
+      dispatch(setPassword(data.password));
+      dispatch(setAge(Number(data.age)));
+      dispatch(setGender(data.gender as GenderEnum));
+      navigate("/");
+    }
+  };
 
   return (
     <>
       <h2>Controlled form</h2>
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <label>
-          First Name
-          <input
-            {...register("name")}
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
-          />
-        </label>
+      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+        <div className={styles.inputContainer}>
+          <label htmlFor="image">Name</label>
+          <input id="image" {...register("name")} />
+          <p>{errors.name?.message || ""}</p>
+        </div>
 
-        <label>
-          Age
-          <input
-            {...register("age")}
-            type="number"
-            onChange={(e) => {
-              setAge(Number(e.target.value));
-            }}
-          />
-        </label>
+        <div className={styles.inputContainer}>
+          <label htmlFor="age">Age</label>
+          <input id="age" type="number" {...register("age")} />
+          <p>{errors.age?.message || ""}</p>
+        </div>
 
-        <label>
-          E-mail
-          <input
-            {...register("mail")}
-            onChange={(e) => {
-              setMail(e.target.value);
-            }}
-          />
-        </label>
+        <div className={styles.inputContainer}>
+          <label htmlFor="mail">E-mail</label>
+          <input id="mail" {...register("mail")} />
+          <p>{errors.mail?.message || ""}</p>
+        </div>
 
-        <label>
-          Password
-          <input
-            {...register("password")}
-            type="password"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
-        </label>
+        <div className={styles.inputContainer}>
+          <label htmlFor="password">Password</label>
+          <input id="password" {...register("password")} />
+          <p>{errors.password?.message || ""}</p>
+        </div>
 
-        <label>
-          Submit Password
-          <input
-            type="password"
-            onChange={(event) => {
-              setPasswordSubmit(event.target.value);
-            }}
-          />
-        </label>
+        <div className={styles.inputContainer}>
+          <label htmlFor="passwordSubmit">Submit Password</label>
+          <input id="passwordSubmit" {...register("passwordSubmit")} />
+          <p>{errors.passwordSubmit?.message || ""}</p>
+        </div>
 
-        <label>
-          Gender Selection
-          <select
-            {...register("gender")}
-            onChange={(e) => {
-              setGender(e.target.value as GenderEnum);
-            }}
-          >
+        <div className={styles.inputContainer}>
+          <label htmlFor="gender">Select gender</label>
+          <select {...register("gender")}>
             <option value={GenderEnum.female}>female</option>
             <option value={GenderEnum.male}>male</option>
             <option value={GenderEnum.other}>other</option>
           </select>
-        </label>
+        </div>
 
-        <label>
-          Image
+        <div className={styles.inputContainer}>
+          <label htmlFor="image">Choose Image</label>
           <input
-            {...register("image")}
+            type="file"
+            id="image"
+            accept="image/png, image/jpeg"
+            defaultValue={""}
             onChange={(e) => {
-              setImage(e.target.value);
+              if (e.target.files) {
+                validateImage(
+                  e.target.files[0],
+                  setImageError,
+                  dispatch,
+                  setImage,
+                );
+              }
             }}
           />
-        </label>
+          <p>{imageError}</p>
+        </div>
 
-        <label>
-          accept T&C
-          <input
-            type="checkbox"
-            {...register("terms")}
-            onChange={(e) => {
-              setTerms(e.target.checked);
-            }}
-          />
-        </label>
+        <div className={styles.inputContainer}>
+          <label htmlFor="country">Select country</label>
+          <input {...register("country")} list="countries" />
+          <datalist id="countries">
+            {countries.map((item) => (
+              <option value={item.name} key={item.name} />
+            ))}
+          </datalist>
+          <p>{errors.country?.message || ""}</p>
+        </div>
+
+        <div className={styles.inputContainer}>
+          <label htmlFor="image">accept T&C</label>
+          <input id="terms" type="checkbox" {...register("terms")} />
+          <p>{errors.terms?.message || ""}</p>
+        </div>
 
         <button type="submit">Accept</button>
       </form>

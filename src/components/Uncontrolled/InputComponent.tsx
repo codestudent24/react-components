@@ -1,4 +1,5 @@
 import React from "react";
+import { getErrorMessage } from "../../utils/functions";
 import styles from "../Share/Form.module.css";
 
 type Props = {
@@ -7,10 +8,6 @@ type Props = {
   type?: string;
   error?: string;
 };
-
-function getErrorMessage(error: string) {
-  return error.length ? `Error: ${error}` : "";
-}
 
 const UncontrolledInput = React.forwardRef<HTMLInputElement, Props>(
   ({ label, id, type = "text", error = "" }: Props, ref) => {

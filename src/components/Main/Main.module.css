@@ -1,7 +1,39 @@
+.main {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.controlled,
 .uncontrolled {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    margin: 20px 60px;
+    padding: 20px;
+    border: 2px solid black;
+    box-shadow: 2px 2px 5px gray;
+}
+
+.controlled img,
+.uncontrolled img {
+  display: block;
+  max-width: 300px;
+  max-height: 600px;
+}
+
+.controlled p,
+.uncontrolled p {
+  margin: 5px 0;
+  padding: 10px;
+  font-weight: 700;
+  border-radius: 10px;
+  border-bottom: 1px solid black;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.controlled p span:nth-of-type(2),
+.uncontrolled p span:nth-of-type(2) {
+  font-family: 'Courier New', Courier, monospace;
 }

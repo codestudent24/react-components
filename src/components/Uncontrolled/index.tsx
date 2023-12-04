@@ -6,7 +6,6 @@ import {
   mailSchema,
   nameSchema,
   passwordSchema,
-  termsSchema,
 } from "../../Validations/Validation";
 import styles from "../Share/Form.module.css";
 import UncontrolledInput from "./InputComponent";
@@ -26,6 +25,7 @@ import {
   isValidNumber,
   isValidBoolean,
 } from "../../utils/functions";
+import { useAppSelector } from "../../redux/hooks";
 
 export default function UncontrolledForm() {
   const navigate = useNavigate();
@@ -47,6 +47,7 @@ export default function UncontrolledForm() {
   const termsRef = useRef<HTMLInputElement>(null);
   const countryRef = useRef<HTMLInputElement>(null);
 
+  const { countries } = useAppSelector((state) => state.countries);
   const dispatch = useAppDispatch();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -86,9 +87,8 @@ export default function UncontrolledForm() {
         passwordSubmitRef.current.value,
         setPasswordSubmitError,
       );
-      const termsIsValid = await isValidBoolean(
+      const termsIsValid = isValidBoolean(
         termsRef.current.checked,
-        termsSchema,
         setTermsError,
       );
 
@@ -182,9 +182,9 @@ export default function UncontrolledForm() {
           <label htmlFor="country">Select country</label>
           <input ref={countryRef} list="countries" />
           <datalist id="countries">
-            <option value="Russian Federasion" />
-            <option value="USA" />
-            <option value="Kazakhstan" />
+            {countries.map((item) => (
+              <option value={item.name} key={item.name} />
+            ))}
           </datalist>
         </div>
 

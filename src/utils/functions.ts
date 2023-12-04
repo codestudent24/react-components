@@ -46,21 +46,16 @@ export async function isValidNumber(
   }
 }
 
-export async function isValidBoolean(
+export function isValidBoolean(
   value: boolean,
-  schema: yup.BooleanSchema<boolean | undefined, yup.AnyObject, undefined, "">,
   setErrorState: React.Dispatch<React.SetStateAction<string>>,
 ) {
-  try {
-    await schema.validate(value);
-    return true;
-  } catch (error) {
-    if (error instanceof yup.ValidationError) {
-      setErrorState(error.errors[0]);
-    }
+  if (value) {
     setErrorState("");
-    return false;
+    return true;
   }
+  setErrorState("accept T&C");
+  return false;
 }
 
 export function comparePasswords(
@@ -142,3 +137,7 @@ export const convertToBase64 = (
     };
   });
 };
+
+export function getErrorMessage(error: string) {
+  return error.length ? `Error: ${error}` : "";
+}
