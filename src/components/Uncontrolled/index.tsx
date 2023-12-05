@@ -24,6 +24,7 @@ import {
   isValidString,
   isValidNumber,
   isValidBoolean,
+  getPasswordElementStrength,
 } from "../../utils/functions";
 import { useAppSelector } from "../../redux/hooks";
 
@@ -142,13 +143,16 @@ export default function UncontrolledForm() {
           ref={mailRef}
           error={mailError}
         />
-        <UncontrolledInput
-          label="Password"
-          id="password"
-          ref={passwordRef}
-          type="password"
-          error={passwordError}
-        />
+
+        <div className={styles.inputContainer}>
+          <label htmlFor="password">Password</label>
+          <input id="password" ref={passwordRef} type="password" />
+          <br />
+          <label>strength</label>
+          <progress value={getPasswordElementStrength(passwordRef)} max={100} />
+          <p>{passwordError || ""}</p>
+        </div>
+
         <UncontrolledInput
           label="Submit Password"
           id="passwordSubmit"

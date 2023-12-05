@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { GenderEnum } from "../../types/types";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../redux/store";
 import styles from "../Share/Form.module.css";
-import { validateImage } from "../../utils/functions";
+import {
+  getPasswordElementStrength,
+  validateImage,
+} from "../../utils/functions";
 import {
   setAge,
   setGender,
@@ -28,6 +31,8 @@ export default function ControlledForm() {
 
   const { countries } = useAppSelector((state) => state.countries);
   const dispatch = useAppDispatch();
+
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   const onSubmit = (data: FormData) => {
     console.log(JSON.stringify(data));
@@ -75,12 +80,19 @@ export default function ControlledForm() {
         <div className={styles.inputContainer}>
           <label htmlFor="password">Password</label>
           <input id="password" {...register("password")} />
+          <br />
+          <label>strength</label>
+          <progress value={getPasswordElementStrength(passwordRef)} max={100} />
           <p>{errors.password?.message || ""}</p>
         </div>
 
         <div className={styles.inputContainer}>
           <label htmlFor="passwordSubmit">Submit Password</label>
-          <input id="passwordSubmit" {...register("passwordSubmit")} />
+          <input
+            id="passwordSubmit"
+            {...register("passwordSubmit")}
+            ref={passwordRef}
+          />
           <p>{errors.passwordSubmit?.message || ""}</p>
         </div>
 

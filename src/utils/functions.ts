@@ -141,3 +141,18 @@ export const convertToBase64 = (
 export function getErrorMessage(error: string) {
   return error.length ? `Error: ${error}` : "";
 }
+
+export function getPasswordElementStrength(
+  ref: React.RefObject<HTMLInputElement>,
+) {
+  if (ref.current) {
+    const len = ref.current.value.length;
+    return len > 9 ? 100 : len * 10;
+  }
+  return 0;
+}
+
+export function getPasswordStrength(value: string) {
+  const len = value.length;
+  return len > 9 ? 100 : len * 10;
+}
